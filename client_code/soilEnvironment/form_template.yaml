@@ -4,6 +4,42 @@ components_by_slot:
     name: heading_1
     properties: {icon: 'mi:solar_power', text: 土壤环境与管理信息}
     type: form:dep_lin1x4oec0ytd:_Components.Heading
+  - components:
+    - data_bindings:
+      - {code: 'self.item[''soilType'']', property: items, writeback: false}
+      event_bindings: {change: dropdown_menu_1_change}
+      layout_properties: {grid_position: 'FBFYAZ,MWRALS'}
+      name: dropdown_menu_1
+      properties: {align: center, appearance: outlined, label: 选择土壤组成类型}
+      type: form:dep_lin1x4oec0ytd:_Components.DropdownMenu
+    - data_bindings:
+      - {code: self.v, property: enabled, writeback: false}
+      layout_properties: {grid_position: 'FBFYAZ,GGWFWZ WGMGYP,CKPXPS'}
+      name: text_box_3
+      properties: {align: center, appearance: outlined, label: '土壤中的砂含量 [%]', tooltip: 土壤自定义时使用}
+      type: form:dep_lin1x4oec0ytd:_Components.TextInput.TextBox
+    - data_bindings:
+      - {code: self.v, property: enabled, writeback: false}
+      layout_properties: {grid_position: 'FBFYAZ,GGWFWZ WGMGYP,DBWCNR'}
+      name: text_box_4
+      properties: {align: center, appearance: outlined, label: '土壤中的粘土含量 [%]', tooltip: 土壤自定义时使用}
+      type: form:dep_lin1x4oec0ytd:_Components.TextInput.TextBox
+    - data_bindings:
+      - {code: self.v, property: enabled, writeback: false}
+      layout_properties: {grid_position: 'TOYLLQ,XVCVQF'}
+      name: text_box_1
+      properties: {align: center, appearance: outlined, display_italic: false, label: 土壤萎嫣点含水量, tooltip: 土壤自定义时使用}
+      type: form:dep_lin1x4oec0ytd:_Components.TextInput.TextBox
+    - data_bindings:
+      - {code: self.v, property: enabled, writeback: false}
+      layout_properties: {grid_position: 'TOYLLQ,PVIUJX'}
+      name: text_box_2
+      properties: {align: center, appearance: outlined, label: 田间持水量, tooltip: 土壤自定义时使用}
+      type: form:dep_lin1x4oec0ytd:_Components.TextInput.TextBox
+    layout_properties: {}
+    name: column_panel_1
+    properties: {col_widths: '{"MWRALS":30,"GGWFWZ":30}'}
+    type: ColumnPanel
   navigation:
   - layout_properties: {}
     name: navigation_link_1
@@ -15,7 +51,7 @@ components_by_slot:
     type: form:dep_lin1x4oec0ytd:_Components.NavigationLink
   - layout_properties: {}
     name: navigation_link_3
-    properties: {icon: 'mi:solar_power', selected: true, text: 土壤环境信息}
+    properties: {icon: 'mi:solar_power', selected: true, text: 土壤基本信息}
     type: form:dep_lin1x4oec0ytd:_Components.NavigationLink
 is_package: true
 layout:

@@ -3,9 +3,10 @@ from anvil import *
 import copy
 
 class cropBasicInfo(cropBasicInfoTemplate):
-  crop_row={'cropName':'玉米','Type':'默认','plantMethod':'默认','areaRatio':50,'plantDate':'04/15','harvesDate':'09/15'}
+  crop_row={'cropName':'玉米','Type':'默认','plantMethod':'默认','areaRatio':50,'plantDate':'错误缺失','harvesDate':'错误缺失'}
   num_rows=0#表的行数
   diffrentCrop=[]
+
   v=False
   def __init__(self, **properties):
     self.item={'cropName':['玉米','小麦','水稻','土豆','其他'],
@@ -50,33 +51,22 @@ class cropBasicInfo(cropBasicInfoTemplate):
     self.crop_row['areaRatio']=self.slider_1.value
 
   def button_1_click(self, **event_args):
-    
+
     
     if self.crop_row['cropName'] not in self.diffrentCrop:
       """This method is called when the component is clicked."""
       self.num_rows=self.num_rows+1
       tempRow=[self.crop_row]
 
-      if len(self.repeating_panel_1.items)<self.num_rows:
-        self.repeating_panel_1.items= self.repeating_panel_1.items + copy.deepcopy( tempRow ) 
-        #更新组件显示
-        self.text_1.text=''
-        self.text_box_2.text=''
-        self.text_box_3.text=''
-
-        self.v=False
-      else:
-        crop_table=self.repeating_panel_1.items
-        crop_table[self.num_rows-1]=copy.deepcopy(self.crop_row)
-        self.repeating_panel_1.items=crop_table
+      self.repeating_panel_1.items= self.repeating_panel_1.items + copy.deepcopy( tempRow ) 
+      #更新组件显示
+      self.cropName_drop_down.selected_value=''
+      self.text_1.text=''
+      self.text_box_2.text=''
+      self.text_box_3.text=''
       
-        if len(self.repeating_panel_1.items)>self.num_rows:
-          self.crop_row=crop_table[self.num_rows]
-        else:
-          self.text_1.text=''
-          self.text_box_2.text=''
-          self.text_box_3.text=''
-          #self.crop_row={'cropName':'玉米','Type':'叶菜类','plantMethod':'移栽','area':1,'plantDate':'04/15','harvesDate':'09/15'}
-          self.v=False
+      self.v=False
       self.diffrentCrop=self.diffrentCrop+ [self.repeating_panel_1.items[-1]['cropName']]
       self.refresh_data_bindings()
+    else:
+      Notification('已经添加过该作物了！').show()

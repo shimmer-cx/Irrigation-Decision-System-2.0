@@ -13,7 +13,11 @@ class RowTemplate1(RowTemplate1Template):
 
   def link_1_click(self, **event_args):
     """This method is called clicked"""
-    self.remove_from_parent()
-    # cropBasicInfo.diffrentCrop.remove(self.item['cropName'])
-    Notification("删除成功！").show()
+
+
+    # self.remove_from_parent()
+    # cropBasicInfo.num_rows=cropBasicInfo.num_rows-1
+    
+
+    Notification("清空成功！").show()
 

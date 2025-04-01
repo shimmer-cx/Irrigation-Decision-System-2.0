@@ -2,7 +2,7 @@ components:
 - event_bindings: {click: link_1_click}
   layout_properties: {column: HOWVRC}
   name: link_1
-  properties: {align: center, text: 删除}
+  properties: {align: center, text: 修改}
   type: form:dep_lin1x4oec0ytd:_Components.Link
 container: {type: DataRowPanel}
 is_package: true
