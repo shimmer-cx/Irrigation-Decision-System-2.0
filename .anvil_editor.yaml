@@ -9,7 +9,9 @@ unique_ids:
   forms:
     HomePage: '1743478095473856603097303.1367'
     cropBasicInfo: '1743483795076459436091539.4686'
+    cropBasicInfo.RowTemplate1: '1743500443550961508157225.962'
     guanquBasicInfo: '1743483132601609610643595.8845'
+    soilEnvironment: '1743496084433918970881728.5365'
   modules: {}
   scripts: {}
   server_modules: {}

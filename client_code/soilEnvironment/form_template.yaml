@@ -1,0 +1,23 @@
+components_by_slot:
+  content:
+  - layout_properties: {}
+    name: heading_1
+    properties: {icon: 'mi:solar_power', text: 土壤环境与管理信息}
+    type: form:dep_lin1x4oec0ytd:_Components.Heading
+  navigation:
+  - layout_properties: {}
+    name: navigation_link_1
+    properties: {icon: 'mi:assignment_add', navigate_to: guanquBasicInfo, text: 灌区基本信息}
+    type: form:dep_lin1x4oec0ytd:_Components.NavigationLink
+  - layout_properties: {}
+    name: navigation_link_2
+    properties: {icon: 'mi:potted_plant', navigate_to: cropBasicInfo, text: 作物基本信息}
+    type: form:dep_lin1x4oec0ytd:_Components.NavigationLink
+  - layout_properties: {}
+    name: navigation_link_3
+    properties: {icon: 'mi:solar_power', selected: true, text: 土壤环境信息}
+    type: form:dep_lin1x4oec0ytd:_Components.NavigationLink
+is_package: true
+layout:
+  properties: {navigation_rail_collapse_to: bottom_app_bar, navigation_rail_vertical_align: center, show_sidesheet: false}
+  type: form:dep_lin1x4oec0ytd:Layouts.NavigationRailLayout

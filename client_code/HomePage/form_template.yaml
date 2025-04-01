@@ -12,7 +12,7 @@ components_by_slot:
     - components:
       - layout_properties: {slot: card-content-container-slot}
         name: heading_2
-        properties: {bold: false, italic: true, text: 如何高效的利用有限水之源灌溉农田？基于AquaCrop的灌溉决策支持系统，给出我们的解决方案！}
+        properties: {bold: false, italic: true, text: 如何高效的利用有限水之源灌溉农田？/n基于AquaCrop的灌溉决策支持系统，给出我们的解决方案！}
         type: form:dep_lin1x4oec0ytd:_Components.Heading
       - components:
         - event_bindings: {mouse_leave: image_2_mouse_leave, mouse_up: image_2_mouse_up}
@@ -79,23 +79,33 @@ components_by_slot:
     properties: {}
     type: Spacer
   - components:
-    - layout_properties: {slot: anvil-m3-buttonMenu-slot}
-      name: navigation_link_1
-      properties: {icon: 'mi:assignment_add', navigate_to: Form1, selected: false, text: 灌区基本信息}
-      type: form:dep_lin1x4oec0ytd:_Components.NavigationLink
-    - layout_properties: {slot: anvil-m3-buttonMenu-slot}
-      name: navigation_link_2
-      properties: {icon: 'mi:potted_plant', navigate_to: cropBasicInfo, text: 作物基本信息}
-      type: form:dep_lin1x4oec0ytd:_Components.NavigationLink
-    - layout_properties: {slot: anvil-m3-buttonMenu-slot}
-      name: navigation_link_3
-      properties: {text: 土壤环境信息}
-      type: form:dep_lin1x4oec0ytd:_Components.NavigationLink
-    data_bindings: []
+    - components:
+      - layout_properties: {slot: anvil-m3-buttonMenu-slot}
+        name: navigation_link_1
+        properties: {icon: 'mi:assignment_add', navigate_to: guanquBasicInfo, selected: false, text: 填写信息以确定灌溉}
+        type: form:dep_lin1x4oec0ytd:_Components.NavigationLink
+      - layout_properties: {slot: anvil-m3-buttonMenu-slot}
+        name: navigation_link_2
+        properties: {icon: 'mi:water_do', navigate_to: null, text: 查看灌溉计划}
+        type: form:dep_lin1x4oec0ytd:_Components.NavigationLink
+      data_bindings: []
+      name: button_menu_1
+      properties: {align: full, appearance: filled, icon: 'mi:account_child_invert', icon_size: null, text: 直开口管理人员入口}
+      type: form:dep_lin1x4oec0ytd:_Components.ButtonMenu
+    - name: spacer_2
+      properties: {}
+      type: Spacer
+    - name: spacer_3
+      properties: {}
+      type: Spacer
     layout_properties: {}
-    name: button_menu_1
-    properties: {align: full, appearance: filled, icon: 'mi:account_child_invert', icon_size: null, text: 直开口管理人员入口}
-    type: form:dep_lin1x4oec0ytd:_Components.ButtonMenu
+    name: linear_panel_1
+    properties: {}
+    type: LinearPanel
+  - layout_properties: {}
+    name: spacer_4
+    properties: {}
+    type: Spacer
   - components:
     - layout_properties: {slot: anvil-m3-buttonMenu-slot}
       name: navigation_link_4
@@ -107,7 +117,7 @@ components_by_slot:
       type: form:dep_lin1x4oec0ytd:_Components.NavigationLink
     layout_properties: {}
     name: button_menu_2
-    properties: {align: full, appearance: elevated, text: 灌区管理中心}
+    properties: {align: full, appearance: elevated, icon_position: right, text: 灌区管理中心}
     type: form:dep_lin1x4oec0ytd:_Components.ButtonMenu
 is_package: true
 layout: {type: 'form:dep_lin1x4oec0ytd:Layouts.NavigationRailLayout'}
