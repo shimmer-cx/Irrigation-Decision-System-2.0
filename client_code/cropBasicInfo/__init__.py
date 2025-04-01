@@ -51,8 +51,6 @@ class cropBasicInfo(cropBasicInfoTemplate):
 
   def button_1_click(self, **event_args):
     
-    for c in len(self.repeating_panel_1.items):
-      self.diffrentCrop[c]=self.repeating_panel_1.items[c]['cropName']
     
     if self.crop_row['cropName'] not in self.diffrentCrop:
       """This method is called when the component is clicked."""
@@ -61,11 +59,11 @@ class cropBasicInfo(cropBasicInfoTemplate):
 
       if len(self.repeating_panel_1.items)<self.num_rows:
         self.repeating_panel_1.items= self.repeating_panel_1.items + copy.deepcopy( tempRow ) 
-       #self.crop_table=self.repeating_panel_1.items
+        #更新组件显示
         self.text_1.text=''
         self.text_box_2.text=''
         self.text_box_3.text=''
-        # self.crop_row={'cropName':'玉米','Type':'叶菜类','plantMethod':'移栽','area':1,'plantDate':'04/15','harvesDate':'09/15'}
+
         self.v=False
       else:
         crop_table=self.repeating_panel_1.items
@@ -80,5 +78,5 @@ class cropBasicInfo(cropBasicInfoTemplate):
           self.text_box_3.text=''
           #self.crop_row={'cropName':'玉米','Type':'叶菜类','plantMethod':'移栽','area':1,'plantDate':'04/15','harvesDate':'09/15'}
           self.v=False
-      # self.diffrentCrop=self.diffrentCrop+ copy.deepcopy([self.repeating_panel_1.items[-1]['cropName']])
+      self.diffrentCrop=self.diffrentCrop+ [self.repeating_panel_1.items[-1]['cropName']]
       self.refresh_data_bindings()
