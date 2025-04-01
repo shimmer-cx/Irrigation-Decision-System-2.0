@@ -1,7 +1,15 @@
 unique_ids:
   assets:
+    Management_central.jpg: '1743480698611889542281106.5181'
+    ZhiKaiKou.jpg: '1743478226479520403734451.66144'
+    aquacrop.jpg: '17434804838712671809581.7810373'
     theme.css: 6G44GIEQQRJLILWU6GQSQO5BTDFT5ZI3
-  forms: {}
+    决策原理.png: '174348092185393850811856.2842'
+    气象.jpg: '174348133217811268752035.730856'
+  forms:
+    HomePage: '1743478095473856603097303.1367'
+    cropBasicInfo: '1743483795076459436091539.4686'
+    guanquBasicInfo: '1743483132601609610643595.8845'
   modules: {}
   scripts: {}
   server_modules: {}
