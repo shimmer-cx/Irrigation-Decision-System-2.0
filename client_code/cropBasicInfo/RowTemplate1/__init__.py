@@ -14,6 +14,6 @@ class RowTemplate1(RowTemplate1Template):
   def link_1_click(self, **event_args):
     """This method is called clicked"""
     self.remove_from_parent()
-    cropBasicInfo.diffrentCrop.remove(self.item['cropName'])
+    # cropBasicInfo.diffrentCrop.remove(self.item['cropName'])
     Notification("删除成功！").show()
 
