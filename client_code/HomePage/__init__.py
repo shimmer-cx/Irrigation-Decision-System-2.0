@@ -25,7 +25,9 @@ class HomePage(HomePageTemplate):
     self.rich_text_2.content=""
 
   def icon_button_1_click(self, **event_args):
-    anvil.users.login_with_form()
+    user=anvil.users.login_with_form()
+    if user is not None:
+      Notification('登录成功！').show()
 
   def icon_button_2_click(self, **event_args):
     anvil.users.logout()
