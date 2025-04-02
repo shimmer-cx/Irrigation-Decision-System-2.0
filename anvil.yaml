@@ -1,4 +1,58 @@
 allow_embedding: false
+db_schema:
+  users:
+    client: none
+    columns:
+    - admin_ui: {order: 0, width: 200}
+      name: email
+      type: string
+    - admin_ui: {order: 1, width: 200}
+      name: enabled
+      type: bool
+    - admin_ui: {order: 2, width: 200}
+      name: last_login
+      type: datetime
+    - admin_ui: {order: 3, width: 200}
+      name: password_hash
+      type: string
+    - admin_ui: {order: 4, width: 200}
+      name: n_password_failures
+      type: number
+    - admin_ui: {order: 5, width: 200}
+      name: confirmed_email
+      type: bool
+    - admin_ui: {order: 6, width: 200}
+      name: remembered_logins
+      type: simpleObject
+    - admin_ui: {order: 7, width: 200}
+      name: signed_up
+      type: datetime
+    server: full
+    title: Users
+  zhikaikouuser_data:
+    client: none
+    columns:
+    - admin_ui: {order: 0, width: 200}
+      name: User
+      target: users
+      type: link_single
+    - admin_ui: {order: 1, width: 200}
+      name: irrigationArea_infor
+      type: simpleObject
+    - admin_ui: {order: 2, width: 200}
+      name: crop_Infor
+      type: simpleObject
+    - admin_ui: {order: 3, width: 200}
+      name: soil_infor
+      type: simpleObject
+    - admin_ui: {order: 4, width: 200}
+      name: water_table
+      type: simpleObject
+    - admin_ui: {order: 0.5, width: 200}
+      name: submit_time
+      type: datetime
+    server: full
+    title: ZhikaikouUser_data
 dependencies:
 - config: {}
   dep_id: dep_lin1x4oec0ytd
@@ -17,5 +71,8 @@ services:
 - client_config: {enable_v2: true}
   server_config: {}
   source: /runtime/services/tables.yml
-startup: {module: cropBasicInfo, type: form}
+- client_config: {allow_remember_me: true, allow_signup: true, confirm_email: false, enable_automatically: true, remember_me_days: 30, use_email: true}
+  server_config: {user_table: users}
+  source: /runtime/services/anvil/users.yml
+startup: {module: HomePage, type: form}
 startup_form: null

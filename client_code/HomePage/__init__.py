@@ -1,5 +1,10 @@
 from ._anvil_designer import HomePageTemplate
 from anvil import *
+import anvil.server
+import anvil.users
+import anvil.tables as tables
+import anvil.tables.query as q
+from anvil.tables import app_tables
 
 
 class HomePage(HomePageTemplate):
@@ -20,3 +25,36 @@ class HomePage(HomePageTemplate):
   def image_2_mouse_leave(self, x, y, **event_args):
     """This method is called when the mouse cursor leaves this component"""
     self.rich_text_2.content=""
+
+  def icon_button_1_click(self, **event_args):
+    anvil.users.login_with_form()
+
+  def icon_button_2_click(self, **event_args):
+    anvil.users.logout()
+    Notification('退出登录成功！').show()
+
+
+
+  def link_1_click(self, **event_args):
+    """This method is called clicked"""
+    user = anvil.users.get_user()
+    if user is None:
+      Notification('请先登录再尝试！').show()
+    else:
+      open_form('BasicInfo_irrigationArea')
+
+  def link_2_click(self, **event_args):
+    """This method is called clicked"""
+    user = anvil.users.get_user()
+    if user is None:
+      Notification('请先登录再尝试！').show()
+    else:
+      open_form()
+    
+
+
+ 
+
+
+
+      

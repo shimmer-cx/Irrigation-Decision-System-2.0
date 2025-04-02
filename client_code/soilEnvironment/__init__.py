@@ -1,9 +1,15 @@
 from ._anvil_designer import soilEnvironmentTemplate
 from anvil import *
+import anvil.server
+import anvil.users
+import anvil.tables as tables
+import anvil.tables.query as q
+from anvil.tables import app_tables
 
 
 class soilEnvironment(soilEnvironmentTemplate):
   v=True
+  w_e=False
   def __init__(self, **properties):
     self.item={'soilType':['自定义','粘土','粘壤土','壤土','壤砂土','砂土','砂粘土','砂质粘壤土','砂壤土','粉土','粉质粘壤土','粉质壤土','粉质粘土']}
     # Set Form properties and Data Bindings.
@@ -18,3 +24,12 @@ class soilEnvironment(soilEnvironmentTemplate):
     else:
       self.v=False
     self.refresh_data_bindings()
+
+  def checkbox_1_change(self, **event_args):
+    """This method is called when the component is checked or unchecked"""
+    if self.checkbox_1.checked is True:
+      self.w_e=True
+    else:
+      self.w_e=False
+    self.refresh_data_bindings()
+
