@@ -7,9 +7,9 @@ from datetime import datetime
 from pandas import DateOffset
 
 @anvil.server.background_task
-def save_BasicInfo_irrigationArea(data):
+def save_Zhikaikou_data(current_user,whatData,data):
    # Get the logged in user
-    current_user = anvil.users.get_user()
+    # current_user = anvil.users.get_user()#在后台任务中无法获得当前登录！！！！
     # Check that someone is logged in
     if current_user is not None:
       # 获取北京时间
@@ -18,11 +18,16 @@ def save_BasicInfo_irrigationArea(data):
       user_row = (app_tables.zhikaikouuser_data.get(User=current_user)
                or app_tables.zhikaikouuser_data.add_row(User=current_user))
       user_row['submit_time']=now_time.strftime('%Y-%m-%d %H:%M:%S')
-      user_row['irrigationArea_infor']=data
+      user_row[whatData]=data
 
 @anvil.server.callable
-def launch_save_irrigationArea(data):
-   anvil.server.launch_background_task('save_BasicInfo_irrigationArea',data)
+def launch_save_Zhikaikou_data(whatData,data):
+   current_user = anvil.users.get_user()
+   anvil.server.launch_background_task('save_Zhikaikou_data',current_user,whatData,data)
+
+
+
+  
 # This is a server module. It runs on the Anvil server,
 # rather than in the user's browser.
 #

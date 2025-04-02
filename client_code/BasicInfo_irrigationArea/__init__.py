@@ -38,7 +38,34 @@ class BasicInfo_irrigationArea(BasicInfo_irrigationAreaTemplate):
 
   def form_hide(self, **event_args):
     """This method is called when the form is removed from the page"""
-    anvil.server.call('launch_save_irrigationArea',self.item)
+    if self.item[3]!= 0 and self.item[4] !='':
+      anvil.server.call('launch_save_Zhikaikou_data','irrigationArea_infor',self.item)
+
+  def text_box_3_focus(self, **event_args):
+    """This method is called when the component gets focus."""
+    self.text_2.visible=True
+
+  def text_box_3_lost_focus(self, **event_args):
+    """This method is called when the component loses focus."""
+    self.text_2.visible=False
+
+  def text_box_2_focus(self, **event_args):
+    """This method is called when the component gets focus."""
+    self.text_2.visible=True
+
+  def text_box_2_lost_focus(self, **event_args):
+    """This method is called when the component loses focus."""
+    self.text_2.visible=False
+
+  def text_box_5_focus(self, **event_args):
+    """This method is called when the component gets focus."""
+    self.text_3.visible=True
+
+  def text_box_5_lost_focus(self, **event_args):
+    """This method is called when the component loses focus."""
+    self.text_3.visible=False
+
+
 
 
 

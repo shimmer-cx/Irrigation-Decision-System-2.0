@@ -80,3 +80,8 @@ class cropBasicInfo(cropBasicInfoTemplate):
     self.diffrentCrop=[]
     self.num_rows=0
     self.crop_row={'cropName':'玉米','Type':'默认','plantMethod':'默认','areaRatio':100,'plantDate':'缺失','harvesDate':'缺失'}
+
+  def form_hide(self, **event_args):
+    """This method is called when the form is removed from the page"""
+    if self.repeating_panel_1.items is not None and self.repeating_panel_1.items !=[]:
+      anvil.server.call('launch_save_Zhikaikou_data','crop_infor',self.repeating_panel_1.items)
