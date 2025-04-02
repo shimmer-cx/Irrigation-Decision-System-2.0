@@ -173,82 +173,90 @@ def CustomCrop(crop_name,CropType, planting_date, harvest_date,PlantMethod ):
         crop= Crop(built_inCropTypes[crop_name],planting_date=planting_date,harvest_date=harvest_date)
     return crop
 
-def GroundWater(ishaveWater,Date, value):
+def GroundWater(waterTable):
     from aquacrop import GroundWater
-    if ishaveWater is True:
-        haveWater='Y'
-    else:
-        haveWater = 'N'
-    custom=GroundWater(water_table=haveWater,#是否提供地下水位（是或否）
-                        dates=Date,#日期字符串列表形式
+    import copy
+    if waterTable != []:
+      Dates=[]
+      Values=[]
+      #'date':'','depth'
+      for recor in waterTable:
+        Dates=Dates + copy.deepcopy([recor['date']] ) 
+        Values=Values + copy.deepcopy( [recor['depth']] ) 
+        
+      custom=GroundWater(water_table='N',#是否提供地下水位（是或否）
+                        dates=Dates,#日期字符串列表形式
                         values=value)#地下水位深度 [m]
+    else:
+      custom=GroundWater(water_table='Y')#是否提供地下水位（是或否）
+
     return custom
 
 
-# @anvil.server.background_task
-# def RunModel(current_user):
-#     is_irritated=0#返回值，用于标记是否有灌溉
-#     from anvil.tables import app_tables
-#     from aquacrop import AquaCropModel, IrrigationManagement, InitialWaterContent
+@anvil.server.background_task
+def RunModel(current_user):
+    is_irritated=0#返回值，用于标记是否有灌溉
+    from anvil.tables import app_tables
+    from aquacrop import AquaCropModel, IrrigationManagement, InitialWaterContent
 
-#     data = app_tables.zhikaikouuser_data.get(User=current_user)  
+    data = app_tables.zhikaikouuser_data.get(User=current_user)  
     
-#     if data is None or current_user is None:
-#      return  -1#新用户或从没有提交过模型数据的就不要执行以下模块
+    if data is None or current_user is None:
+     return  -1#新用户或从没有提交过模型数据的就不要执行以下模块
     
-#     sim_startDate = data['irrigationArea_infor'][-1]
-#     location = data['irrigationArea_infor'][1:3]
-#     soilParam =data['soil_infor']
-#     groundParam =data['water_table']#要做相应修改
-#     smt =data['soil_infor'][-1:-5]
+    sim_startDate = data['irrigationArea_infor'][-1]
+    location = data['irrigationArea_infor'][1:3]
+    soilParam =data['soil_infor']
+    groundParam =data['water_table']#要做相应修改
+    smt =data['soil_infor'][-1:-5]
   
-#     # for 
-#     # crop_param =data['crop_infor'][0]#要做相应修改
-#     # area =data['irrigationArea_infor'][3]*crop_param["areaRatio"]
+    # for 
+    # crop_param =data['crop_infor'][0]#要做相应修改
+    # area =data['irrigationArea_infor'][3]*crop_param["areaRatio"]
   
-#     weather_df=Get_weather_data(sim_startDate,location)#维度和经度
-#     soil=CustomSoil(soilParam[0],soilParam[1],soilParam[2],soilParam[3],soilParam[4],soilParam[5],soilParam[6])
-#     crop=CustomCrop(crop_param[0],crop_param[1],crop_param[2],crop_param[3],crop_param[4])
-#     initialWater=InitialWaterContent(wc_type = 'Prop', method = 'Layer',  value = ['SAT'])
-#     fieldMan=FieldManagement(fieldManParam[0],fieldManParam[1],fieldManParam[2])
-#     groundWater=GroundWater(groundParam[0],groundParam[1],groundParam[2])
+    weather_df=Get_weather_data(sim_startDate,location)#维度和经度
+    soil=CustomSoil(soilParam[0],soilParam[1],soilParam[2],soilParam[3],soilParam[4],soilParam[5],soilParam[6])
+    crop=CustomCrop(crop_param[0],crop_param[1],crop_param[2],crop_param[3],crop_param[4])
+    initialWater=InitialWaterContent(wc_type = 'Prop', method = 'Layer',  value = ['SAT'])
+    fieldMan=FieldManagement(fieldManParam[0],fieldManParam[1],fieldManParam[2])
+    groundWater=GroundWater(groundParam[0],groundParam[1],groundParam[2])
 
-#     # 获取北京时间
-#     beijing_time = datetime.now()#+pd.DateOffset(hours=8)
-#     N=7   #从现在开始向前运行 N 天，也即模拟结束时间为一周后结束
-#     sim_endDate =beijing_time+ pd.DateOffset(days=N-1)
-#     sim_endDate=sim_endDate.strftime('%Y/%m/%d')
+    # 获取北京时间
+    beijing_time = datetime.now()#+pd.DateOffset(hours=8)
+    N=7   #从现在开始向前运行 N 天，也即模拟结束时间为一周后结束
+    sim_endDate =beijing_time+ pd.DateOffset(days=N-1)
+    sim_endDate=sim_endDate.strftime('%Y/%m/%d')
 
-#     #SMT | list[float] | 每个生长阶段要维持的土壤水分目标（%TAW）
-#     irr_mngt=IrrigationManagement(irrigation_method=1,SMT=smt)
+    #SMT | list[float] | 每个生长阶段要维持的土壤水分目标（%TAW）
+    irr_mngt=IrrigationManagement(irrigation_method=1,SMT=smt)
     
-#     model = AquaCropModel(sim_start_time=sim_startDate,
-#                           sim_end_time=sim_endDate,
-#                           weather_df=weather_df,
-#                           soil=soil,
-#                           crop=crop,
-#                           initial_water_content=initialWater,
-#                           field_management=fieldMan,
-#                           irrigation_management=irr_mngt,
-#                           groundwater=groundWater) # create model
-#     model.run_model(till_termination=True)#Run
-#     IrrDay=model._outputs.water_flux['IrrDay']
-#     length=len(IrrDay)
-#     Now_counder=length-N
-#     n=0
-#     from math import ceil
+    model = AquaCropModel(sim_start_time=sim_startDate,
+                          sim_end_time=sim_endDate,
+                          weather_df=weather_df,
+                          soil=soil,
+                          crop=crop,
+                          initial_water_content=initialWater,
+                          field_management=fieldMan,
+                          irrigation_management=irr_mngt,
+                          groundwater=groundWater) # create model
+    model.run_model(till_termination=True)#Run
+    IrrDay=model._outputs.water_flux['IrrDay']
+    length=len(IrrDay)
+    Now_counder=length-N
+    n=0
+    from math import ceil
 
-#     for i in range(Now_counder,length):
-#       date=beijing_time+ pd.DateOffset(days=n)
-#       date=date.strftime('%Y-%m-%d')
-#       n=n+1
-#       if IrrDay.at[i] !=0: #要剔除非生长时间和最后一天才是作物历史灌溉记录
-#         is_irritated=1
-#         new_Row=(app_tables.user_irri_decisions.get(GetTime=beijing_time.strftime('%Y-%m-%d'),User=current_user)
-#                or app_tables.user_irri_decisions.add_row(GetTime=beijing_time.strftime('%Y-%m-%d'),User=current_user))
-#         new_Row["decision_date"]=date
-#         new_Row["irrigation"] =ceil(IrrDay.at[i]*area*0.6666667)#亩的单位要换算
-#         new_Row["phoneNumber"]=current_user['phoneNumber']
+    for i in range(Now_counder,length):
+      date=beijing_time+ pd.DateOffset(days=n)
+      date=date.strftime('%Y-%m-%d')
+      n=n+1
+      if IrrDay.at[i] !=0: #要剔除非生长时间和最后一天才是作物历史灌溉记录
+        is_irritated=1
+        new_Row=(app_tables.user_irri_decisions.get(GetTime=beijing_time.strftime('%Y-%m-%d'),User=current_user)
+               or app_tables.user_irri_decisions.add_row(GetTime=beijing_time.strftime('%Y-%m-%d'),User=current_user))
+        new_Row["decision_date"]=date
+        new_Row["irrigation"] =ceil(IrrDay.at[i]*area*0.6666667)#亩的单位要换算
+        new_Row["phoneNumber"]=current_user['phoneNumber']
     
-#     return is_irritated
+    return is_irritated
 
