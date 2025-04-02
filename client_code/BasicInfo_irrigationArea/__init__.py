@@ -40,7 +40,7 @@ class BasicInfo_irrigationArea(BasicInfo_irrigationAreaTemplate):
 
   def form_hide(self, **event_args):
     """This method is called when the form is removed from the page"""
-    
+    anvil.server.call('launch_save_BasicInfo_irrigationArea',self.item)
 
 
     

@@ -40,7 +40,7 @@ db_schema:
       name: irrigationArea_infor
       type: simpleObject
     - admin_ui: {order: 2, width: 200}
-      name: crop_Infor
+      name: crop_infor
       type: simpleObject
     - admin_ui: {order: 3, width: 200}
       name: soil_infor
