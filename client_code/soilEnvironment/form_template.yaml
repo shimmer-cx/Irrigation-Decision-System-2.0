@@ -38,7 +38,7 @@ components_by_slot:
       event_bindings: {change: text_box_7_change}
       layout_properties: {grid_position: 'TOYLLQ,XVCVQF RYSULX,ZCNCVI'}
       name: text_box_7
-      properties: {appearance: outlined, label: '土壤中的有机物质含量 [%]'}
+      properties: {align: center, appearance: outlined, label: '土壤中的有机物质含量 [%]'}
       type: form:dep_lin1x4oec0ytd:_Components.TextInput.TextBox
     - data_bindings:
       - {code: self.v, property: enabled, writeback: false}
@@ -52,7 +52,7 @@ components_by_slot:
       event_bindings: {change: text_box_8_change}
       layout_properties: {grid_position: 'TOYLLQ,PVIUJX OWPAGX,ITWXGQ'}
       name: text_box_8
-      properties: {appearance: outlined, label: '水力传导速率 [mm/day]'}
+      properties: {align: center, appearance: outlined, label: '水力传导速率 [mm/day]'}
       type: form:dep_lin1x4oec0ytd:_Components.TextInput.TextBox
     - layout_properties: {grid_position: 'OOFEFF,DRMKLL'}
       name: text_1
