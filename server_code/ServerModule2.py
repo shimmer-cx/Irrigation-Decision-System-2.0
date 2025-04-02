@@ -1,9 +1,132 @@
 import anvil.users
-import anvil.tables as tables
-import anvil.tables.query as q
-from anvil.tables import app_tables
 import anvil.server
+import anvil.tables as tables
+import pandas as pd
 
+import openmeteo_requests
+import requests_cache
+from retry_requests import retry
+
+from datetime import datetime
+# from zoneinfo import ZoneInfo
+
+def GetForecastWeather(lat,lon,Day):#获取预报气象数据
+   
+    #使用缓存设置Open-Meteo API客户端，并在出现错误时重试
+    cache_session = requests_cache.CachedSession('.cache', expire_after = 3600)
+    retry_session = retry(cache_session, retries = 5, backoff_factor = 0.2)
+    openmeteo = openmeteo_requests.Client(session = retry_session)
+
+    # Make sure all required weather variables are listed here
+    # The order of variables in hourly or daily is important to assign them correctly below
+    url = "https://api.open-meteo.com/v1/forecast"
+    params = {
+	    "latitude": lat,#银川
+	    "longitude": lon,
+	    "daily": ["temperature_2m_max", "temperature_2m_min", "precipitation_sum", "et0_fao_evapotranspiration"],
+	    "wind_speed_unit": "ms",
+	    "timezone": "Asia/Shanghai",
+      "past_days": Day,
+      # "forecast_days": 7,
+	    "models": "cma_grapes_global"
+    }
+    responses = openmeteo.weather_api(url, params=params)
+
+    # Process first location. Add a for-loop for multiple locations or weather models
+    response = responses[0]
+ 
+    # Process daily data. The order of variables needs to be the same as requested.
+    daily = response.Daily()
+    daily_temperature_2m_max = daily.Variables(0).ValuesAsNumpy()
+    daily_temperature_2m_min = daily.Variables(1).ValuesAsNumpy()
+    daily_precipitation_sum = daily.Variables(2).ValuesAsNumpy()
+    daily_et0_fao_evapotranspiration = daily.Variables(3).ValuesAsNumpy()
+  
+    daily_data = {"Date": pd.date_range(
+  	  start = pd.to_datetime(daily.Time()+28800 , unit="s", utc = True).replace(tzinfo = None).floor("D"),
+	    end = pd.to_datetime(daily.TimeEnd()+28800 , unit = "s", utc = True).replace(tzinfo = None).floor("D"),
+	    freq = pd.Timedelta(seconds = daily.Interval()),
+	    inclusive = "left"
+    )}
+
+    daily_data["MaxTemp"] = daily_temperature_2m_max
+    daily_data["MinTemp"] = daily_temperature_2m_min
+    daily_data["Precipitation"] = daily_precipitation_sum
+    daily_data["ReferenceET"] = daily_et0_fao_evapotranspiration
+
+    daily_dataframe = pd.DataFrame(data = daily_data)
+  
+    #按要求交换列的顺序
+    daily_dataframe=daily_dataframe[['MinTemp','MaxTemp','Precipitation','ReferenceET','Date']]
+
+    return daily_dataframe
+
+def GetHistoryWeather(lat,lon,start_date,end_dat):#获取历史气象数据
+
+    # Setup the Open-Meteo API client with cache and retry on error
+    cache_session = requests_cache.CachedSession('.cache', expire_after = -1)
+    retry_session = retry(cache_session, retries = 5, backoff_factor = 0.2)
+    openmeteo = openmeteo_requests.Client(session = retry_session)
+
+    # Make sure all required weather variables are listed here
+    # The order of variables in hourly or daily is important to assign them correctly below
+    url = "https://archive-api.open-meteo.com/v1/archive"
+    params = {
+	    "latitude": lat,
+	    "longitude": lon,
+	    "start_date": start_date,
+	    "end_date": end_dat,
+	    "daily": ["temperature_2m_max", "temperature_2m_min", "precipitation_sum", "et0_fao_evapotranspiration"],
+	    "timezone": "Asia/Singapore",
+    }
+
+    responses = openmeteo.weather_api(url, params=params)
+
+    # Process first location. Add a for-loop for multiple locations or weather models
+    response = responses[0]
+
+    # Process daily data. The order of variables needs to be the same as requested.
+    daily = response.Daily()
+    daily_temperature_2m_max = daily.Variables(0).ValuesAsNumpy()
+    daily_temperature_2m_min = daily.Variables(1).ValuesAsNumpy()
+    daily_precipitation_sum = daily.Variables(2).ValuesAsNumpy()
+    daily_et0_fao_evapotranspiration = daily.Variables(3).ValuesAsNumpy()
+
+    daily_data = {"Date": pd.date_range(
+	    start = pd.to_datetime(daily.Time()+28800, unit = "s", utc = True).replace(tzinfo = None).floor("D"),
+	    end = pd.to_datetime(daily.TimeEnd()+28800, unit = "s", utc = True).replace(tzinfo = None).floor("D"),
+	    freq = pd.Timedelta(seconds = daily.Interval()),
+	    inclusive = "left"
+    )}
+
+    daily_data["MaxTemp"] = daily_temperature_2m_max
+    daily_data["MinTemp"] = daily_temperature_2m_min
+    daily_data["Precipitation"] = daily_precipitation_sum
+    daily_data["ReferenceET"] = daily_et0_fao_evapotranspiration
+
+    daily_dataframe = pd.DataFrame(data = daily_data)
+    #把时间列放在最后,日最低温度列放在第一列
+    daily_dataframe=daily_dataframe[['MinTemp','MaxTemp','Precipitation','ReferenceET','Date']]
+
+    return daily_dataframe
+
+
+def Get_weather_data(simStartDate, location):
+    
+    sim_Start_Date=datetime.strptime(simStartDate, "%Y/%m/%d")
+    sim_Start_Date=sim_Start_Date.strftime('%Y-%m-%d')
+
+    # 获取北京时间
+    beijing_time = datetime.now()
+    Day=3#历史气象数据最晚到3天前的数据
+    end_date =beijing_time-pd.DateOffset(days=Day+1)
+    end_date=end_date.strftime('%Y-%m-%d')
+
+    #获取历史气象数据
+    history_weather=GetHistoryWeather(location[0],location[1],sim_Start_Date,end_date)
+    #获取预测气象数据
+    forecast_weather=GetForecastWeather(location[0],location[1],Day)
+    return pd.concat([history_weather,forecast_weather])
 
 def CustomSoil(soilType, Sand, Clay,thWP,thFC,orgMat,ksat):
     from aquacrop import Soil
@@ -33,18 +156,99 @@ def CustomSoil(soilType, Sand, Clay,thWP,thFC,orgMat,ksat):
       custom.add_layer_from_texture(thickness=1.2,#第二层土壤厚度 [m]
                               Sand=Sand,#土壤中的砂含量 [%]
                               Clay=Clay,#土壤中的粘土含量 [%]
-                              OrgMat=orgMat,
-                              penetrability=100)#土壤中的有机物质含量 [%])
+                              OrgMat=orgMat,#土壤中的有机物质含量 [%]
+                              penetrability=100)
     return custom
-# This is a server module. It runs on the Anvil server,
-# rather than in the user's browser.
-#
-# To allow anvil.server.call() to call functions here, we mark
-# them with @anvil.server.callable.
-# Here is an example - you can replace it with your own:
-#
-# @anvil.server.callable
-# def say_hello(name):
-#   print("Hello, " + name + "!")
-#   return 42
-#
+
+def CustomCrop(crop_name,CropType, planting_date, harvest_date,PlantMethod ):
+    from aquacrop import Crop
+    CropTypes={"叶菜类":1,"根/块茎":2,"果实/谷物":3}#作物类型（1 = 叶菜类，2 = 根/块茎，3 = 果实/谷物）
+    PlantMethods={"移栽":0,"播种":1}#播种方法（0 = 移栽，1 = 播种）
+    built_inCropTypes={'玉米':'Maize', '小麦':'Wheat','水稻':'Rice', '土豆':'Potato'}#the built-in crop types
+    if crop_name not in built_inCropTypes:
+        crop = Crop('custom', planting_date=planting_date,harvest_date=harvest_date,
+                    CropType=CropTypes[CropType],
+                    PlantMethod=PlantMethods[PlantMethod])
+    else:     
+        crop= Crop(built_inCropTypes[crop_name],planting_date=planting_date,harvest_date=harvest_date)
+    return crop
+
+def GroundWater(ishaveWater,Date, value):
+    from aquacrop import GroundWater
+    if ishaveWater is True:
+        haveWater='Y'
+    else:
+        haveWater = 'N'
+    custom=GroundWater(water_table=haveWater,#是否提供地下水位（是或否）
+                        dates=Date,#日期字符串列表形式
+                        values=value)#地下水位深度 [m]
+    return custom
+
+
+# @anvil.server.background_task
+# def RunModel(current_user):
+#     is_irritated=0#返回值，用于标记是否有灌溉
+#     from anvil.tables import app_tables
+#     from aquacrop import AquaCropModel, IrrigationManagement, InitialWaterContent
+
+#     data = app_tables.zhikaikouuser_data.get(User=current_user)  
+    
+#     if data is None or current_user is None:
+#      return  -1#新用户或从没有提交过模型数据的就不要执行以下模块
+    
+#     sim_startDate = data['irrigationArea_infor'][-1]
+#     location = data['irrigationArea_infor'][1:3]
+#     soilParam =data['soil_infor']
+#     groundParam =data['water_table']#要做相应修改
+#     smt =data['soil_infor'][-1:-5]
+  
+#     # for 
+#     # crop_param =data['crop_infor'][0]#要做相应修改
+#     # area =data['irrigationArea_infor'][3]*crop_param["areaRatio"]
+  
+#     weather_df=Get_weather_data(sim_startDate,location)#维度和经度
+#     soil=CustomSoil(soilParam[0],soilParam[1],soilParam[2],soilParam[3],soilParam[4],soilParam[5],soilParam[6])
+#     crop=CustomCrop(crop_param[0],crop_param[1],crop_param[2],crop_param[3],crop_param[4])
+#     initialWater=InitialWaterContent(wc_type = 'Prop', method = 'Layer',  value = ['SAT'])
+#     fieldMan=FieldManagement(fieldManParam[0],fieldManParam[1],fieldManParam[2])
+#     groundWater=GroundWater(groundParam[0],groundParam[1],groundParam[2])
+
+#     # 获取北京时间
+#     beijing_time = datetime.now()#+pd.DateOffset(hours=8)
+#     N=7   #从现在开始向前运行 N 天，也即模拟结束时间为一周后结束
+#     sim_endDate =beijing_time+ pd.DateOffset(days=N-1)
+#     sim_endDate=sim_endDate.strftime('%Y/%m/%d')
+
+#     #SMT | list[float] | 每个生长阶段要维持的土壤水分目标（%TAW）
+#     irr_mngt=IrrigationManagement(irrigation_method=1,SMT=smt)
+    
+#     model = AquaCropModel(sim_start_time=sim_startDate,
+#                           sim_end_time=sim_endDate,
+#                           weather_df=weather_df,
+#                           soil=soil,
+#                           crop=crop,
+#                           initial_water_content=initialWater,
+#                           field_management=fieldMan,
+#                           irrigation_management=irr_mngt,
+#                           groundwater=groundWater) # create model
+#     model.run_model(till_termination=True)#Run
+#     IrrDay=model._outputs.water_flux['IrrDay']
+#     length=len(IrrDay)
+#     Now_counder=length-N
+#     n=0
+#     from math import ceil
+
+#     for i in range(Now_counder,length):
+#       date=beijing_time+ pd.DateOffset(days=n)
+#       date=date.strftime('%Y-%m-%d')
+#       n=n+1
+#       if IrrDay.at[i] !=0: #要剔除非生长时间和最后一天才是作物历史灌溉记录
+#         is_irritated=1
+#         new_Row=(app_tables.user_irri_decisions.get(GetTime=beijing_time.strftime('%Y-%m-%d'),User=current_user)
+#                or app_tables.user_irri_decisions.add_row(GetTime=beijing_time.strftime('%Y-%m-%d'),User=current_user))
+#         new_Row["decision_date"]=date
+#         new_Row["irrigation"] =ceil(IrrDay.at[i]*area*0.6666667)#亩的单位要换算
+#         new_Row["phoneNumber"]=current_user['phoneNumber']
+    
+#     return is_irritated
+

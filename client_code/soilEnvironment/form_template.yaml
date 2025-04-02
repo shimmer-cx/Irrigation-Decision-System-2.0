@@ -54,6 +54,30 @@ components_by_slot:
       name: text_box_8
       properties: {appearance: outlined, label: '水力传导速率 [mm/day]'}
       type: form:dep_lin1x4oec0ytd:_Components.TextInput.TextBox
+    - layout_properties: {grid_position: 'OOFEFF,DRMKLL'}
+      name: text_1
+      properties: {align: center, font_size: 20, text: 作物四个生长阶段分别需要维持的土壤水分目标（%）}
+      type: form:dep_lin1x4oec0ytd:_Components.Text
+    - event_bindings: {change: text_box_9_change}
+      layout_properties: {grid_position: 'HXOWGN,BJYQVS RVQJPL,SMRKPA'}
+      name: text_box_9
+      properties: {align: center, appearance: outlined, label: 发芽期（播种出苗期）​, type: number}
+      type: form:dep_lin1x4oec0ytd:_Components.TextInput.TextBox
+    - event_bindings: {change: text_box_11_change}
+      layout_properties: {grid_position: 'HXOWGN,BJYQVS ARXOFW,QXISBI'}
+      name: text_box_11
+      properties: {align: center, appearance: outlined, label: 营养生长期（茎叶快速生长期）​, type: number}
+      type: form:dep_lin1x4oec0ytd:_Components.TextInput.TextBox
+    - event_bindings: {change: text_box_10_change}
+      layout_properties: {grid_position: 'HXOWGN,AGTNDV OLVYCJ,JYBJGA'}
+      name: text_box_10
+      properties: {align: center, appearance: outlined, label: 幼苗期（营养生长初期）​, type: number}
+      type: form:dep_lin1x4oec0ytd:_Components.TextInput.TextBox
+    - event_bindings: {change: text_box_12_change}
+      layout_properties: {grid_position: 'HXOWGN,AGTNDV HLYGCQ,GMBSBX'}
+      name: text_box_12
+      properties: {align: center, appearance: outlined, label: 生殖生长期（开花至成熟期）​, type: number}
+      type: form:dep_lin1x4oec0ytd:_Components.TextInput.TextBox
     - layout_properties: {grid_position: 'SLXETE,KZQAIG'}
       name: spacer_1
       properties: {}
@@ -70,18 +94,21 @@ components_by_slot:
       type: form:dep_lin1x4oec0ytd:_Components.Checkbox
     - data_bindings:
       - {code: self.w_e, property: enabled, writeback: false}
+      event_bindings: {change: text_box_5_change}
       layout_properties: {grid_position: 'MQXUGV,YMNFVA'}
       name: text_box_5
       properties: {align: center, appearance: outlined, label: 记录日期}
       type: form:dep_lin1x4oec0ytd:_Components.TextInput.TextBox
     - data_bindings:
       - {code: self.w_e, property: enabled, writeback: false}
+      event_bindings: {change: text_box_6_change}
       layout_properties: {grid_position: 'MQXUGV,GTLVKK'}
       name: text_box_6
-      properties: {appearance: outlined, label: 地下水位（单位m）}
+      properties: {appearance: outlined, label: 地下水位（单位m）, type: number}
       type: form:dep_lin1x4oec0ytd:_Components.TextInput.TextBox
     - data_bindings:
       - {code: self.w_e, property: enabled, writeback: false}
+      event_bindings: {click: button_1_click}
       layout_properties: {grid_position: 'GOLCCH,XFRUSB'}
       name: button_1
       properties: {align: center, text: 确定/继续添加}
@@ -92,6 +119,7 @@ components_by_slot:
         type: RepeatingPanel
       - data_bindings:
         - {code: self.w_e, property: enabled, writeback: false}
+        event_bindings: {click: button_2_click}
         layout_properties: {slot: footer}
         name: button_2
         properties: {align: center, text: 清空/重新填写}
@@ -100,8 +128,9 @@ components_by_slot:
       name: data_grid_1
       properties:
         columns:
-        - {data_key: column_1, expand: false, id: KSMAGG, title: 记录日期, width: 482.5}
-        - {data_key: column_2, id: OBPLNF, title: 地下水位}
+        - {data_key: date, expand: false, id: KSMAGG, title: 记录日期, width: ''}
+        - {data_key: depth, id: OBPLNF, title: 地下水位}
+        rows_per_page: 10
       type: DataGrid
     layout_properties: {}
     name: column_panel_1
