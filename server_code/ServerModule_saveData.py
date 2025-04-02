@@ -21,7 +21,7 @@ def save_BasicInfo_irrigationArea(data):
       user_row['irrigationArea_infor']=data
 
 @anvil.server.callable
-def launch_save_BasicInfo_irrigationArea(data):
+def launch_save_irrigationArea(data):
    anvil.server.launch_background_task('save_BasicInfo_irrigationArea',data)
 # This is a server module. It runs on the Anvil server,
 # rather than in the user's browser.
