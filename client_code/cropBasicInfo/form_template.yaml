@@ -72,9 +72,10 @@ components_by_slot:
     - name: repeating_panel_1
       properties: {item_template: cropBasicInfo.RowTemplate1}
       type: RepeatingPanel
-    - layout_properties: {slot: footer}
+    - event_bindings: {click: button_2_click}
+      layout_properties: {slot: footer}
       name: button_2
-      properties: {align: center, appearance: tonal, text: 清空表格, tooltip: 如遇多添加由于某些限制因素，不能单个删除只能清空}
+      properties: {align: center, appearance: tonal, text: 清空表格/重新填写, tooltip: 如遇多添加由于某些限制因素，不能单个删除只能清空}
       type: form:dep_lin1x4oec0ytd:_Components.Button
     data_bindings: []
     layout_properties: {}

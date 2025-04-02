@@ -3,7 +3,7 @@ from anvil import *
 import copy
 
 class cropBasicInfo(cropBasicInfoTemplate):
-  crop_row={'cropName':'玉米','Type':'默认','plantMethod':'默认','areaRatio':50,'plantDate':'错误缺失','harvesDate':'错误缺失'}
+  crop_row={'cropName':'玉米','Type':'默认','plantMethod':'默认','areaRatio':100,'plantDate':'缺失','harvesDate':'缺失'}
   num_rows=0#表的行数
   diffrentCrop=[]
 
@@ -60,7 +60,7 @@ class cropBasicInfo(cropBasicInfoTemplate):
 
       self.repeating_panel_1.items= self.repeating_panel_1.items + copy.deepcopy( tempRow ) 
       #更新组件显示
-      self.cropName_drop_down.selected_value=''
+      self.cropName_drop_down.selected_value='玉米'
       self.text_1.text=''
       self.text_box_2.text=''
       self.text_box_3.text=''
@@ -70,3 +70,10 @@ class cropBasicInfo(cropBasicInfoTemplate):
       self.refresh_data_bindings()
     else:
       Notification('已经添加过该作物了！').show()
+
+  def button_2_click(self, **event_args):
+    """This method is called when the component is clicked."""
+    self.repeating_panel_1.items=[]
+    self.diffrentCrop=[]
+    self.num_rows=0
+    self.crop_row={'cropName':'玉米','Type':'默认','plantMethod':'默认','areaRatio':100,'plantDate':'缺失','harvesDate':'缺失'}
