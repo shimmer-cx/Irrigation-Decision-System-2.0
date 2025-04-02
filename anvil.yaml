@@ -1,5 +1,26 @@
 allow_embedding: false
 db_schema:
+  irrigation_decisions:
+    client: none
+    columns:
+    - admin_ui: {order: 0, width: 200}
+      name: User
+      target: users
+      type: link_single
+    - admin_ui: {order: 1, width: 200}
+      name: submit_time
+      type: string
+    - admin_ui: {order: 2, width: 200}
+      name: irrigation_date
+      type: string
+    - admin_ui: {order: 1.5, width: 200}
+      name: crop_name
+      type: string
+    - admin_ui: {order: 3, width: 200}
+      name: irrigation_volume
+      type: number
+    server: full
+    title: Irrigation_decisions
   users:
     client: none
     columns:
@@ -74,5 +95,5 @@ services:
 - client_config: {allow_remember_me: true, allow_signup: true, confirm_email: false, enable_automatically: true, remember_me_days: 30, use_email: true}
   server_config: {user_table: users}
   source: /runtime/services/anvil/users.yml
-startup: {module: HomePage, type: form}
+startup: {module: irrigationPage, type: form}
 startup_form: null

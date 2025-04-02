@@ -128,16 +128,21 @@ def Get_weather_data(simStartDate, location):
     forecast_weather=GetForecastWeather(location[0],location[1],Day)
     return pd.concat([history_weather,forecast_weather])
 
-def CustomSoil(soilType, Sand, Clay,thWP,thFC,orgMat,ksat):
+def CustomSoil(soilParam):
     from aquacrop import Soil
+    soilType =soilParam[0]
+    Sand =soilParam[1]
+    Clay =soilParam[2]
+    thWP =soilParam[3]
+    thFC =soilParam[4]
+    orgMat =soilParam[5]
+    ksat =soilParam[6]
+  
     built_inSoilTypes={'自定义':"custom", '黏土':"Clay", '黏壤土':"ClayLoam", '默认':'Default',
                       '壤土':"Loam", '壤砂土':"LoamySand", '砂土':"Sand", '砂黏土' :"SandyClay",
                       '砂质黏壤土':"SandyClayLoam", '砂壤土':"SandyLoam", '粉土':"Silt",
                       '粉砂黏壤土':"SiltClayLoam", '粉质壤土':"SiltLoam", '粉质黏土':"SiltClay"}
-    # Clay:黏土
-    # Loam:壤土
-    # Sand:砂土
-    # Silt：粉土
+    # Clay:黏土    # Loam:壤土    # Sand:砂土    # Silt：粉土
     if soilType != '自定义':
       custom = Soil(soil_type=built_inSoilTypes[soilType])
     else:
@@ -160,22 +165,31 @@ def CustomSoil(soilType, Sand, Clay,thWP,thFC,orgMat,ksat):
                               penetrability=100)
     return custom
 
-def CustomCrop(crop_name,CropType, planting_date, harvest_date,PlantMethod ):
+def CustomCrop(crop_param):
     from aquacrop import Crop
+  
+    crop_name=crop_param['cropName']
+    CropType=crop_param['Type']
+    planting_date=crop_param['plantDate']
+    harvest_date=crop_param['harvesDate']
+    PlantMethod=crop_param['plantMethod']
+
     CropTypes={"叶菜类":1,"根/块茎":2,"果实/谷物":3}#作物类型（1 = 叶菜类，2 = 根/块茎，3 = 果实/谷物）
     PlantMethods={"移栽":0,"播种":1}#播种方法（0 = 移栽，1 = 播种）
     built_inCropTypes={'玉米':'Maize', '小麦':'Wheat','水稻':'Rice', '土豆':'Potato'}#the built-in crop types
+  
     if crop_name not in built_inCropTypes:
-        crop = Crop('custom', planting_date=planting_date,harvest_date=harvest_date,
+      crop = Crop('custom', planting_date=planting_date,harvest_date=harvest_date,
                     CropType=CropTypes[CropType],
                     PlantMethod=PlantMethods[PlantMethod])
     else:     
-        crop= Crop(built_inCropTypes[crop_name],planting_date=planting_date,harvest_date=harvest_date)
+      crop= Crop(built_inCropTypes[crop_name],planting_date=planting_date,harvest_date=harvest_date)
     return crop
 
 def GroundWater(waterTable):
     from aquacrop import GroundWater
     import copy
+  
     if waterTable != []:
       Dates=[]
       Values=[]
@@ -184,13 +198,13 @@ def GroundWater(waterTable):
         Dates=Dates + copy.deepcopy([recor['date']] ) 
         Values=Values + copy.deepcopy( [recor['depth']] ) 
         
-      custom=GroundWater(water_table='N',#是否提供地下水位（是或否）
+      groundWater=GroundWater(water_table='Y',#是提供地下水位
                         dates=Dates,#日期字符串列表形式
-                        values=value)#地下水位深度 [m]
+                        values=Values)#地下水位深度 [m]
     else:
-      custom=GroundWater(water_table='Y')#是否提供地下水位（是或否）
+      groundWater=GroundWater(water_table='N')#否提供地下水位（是或否）
 
-    return custom
+    return groundWater
 
 
 @anvil.server.background_task
@@ -206,57 +220,54 @@ def RunModel(current_user):
     
     sim_startDate = data['irrigationArea_infor'][-1]
     location = data['irrigationArea_infor'][1:3]
-    soilParam =data['soil_infor']
-    groundParam =data['water_table']#要做相应修改
+    crop_params =data['crop_infor']
+    soilParam =data['soil_infor'][0:7]
     smt =data['soil_infor'][-1:-5]
-  
-    # for 
-    # crop_param =data['crop_infor'][0]#要做相应修改
-    # area =data['irrigationArea_infor'][3]*crop_param["areaRatio"]
-  
-    weather_df=Get_weather_data(sim_startDate,location)#维度和经度
-    soil=CustomSoil(soilParam[0],soilParam[1],soilParam[2],soilParam[3],soilParam[4],soilParam[5],soilParam[6])
-    crop=CustomCrop(crop_param[0],crop_param[1],crop_param[2],crop_param[3],crop_param[4])
-    initialWater=InitialWaterContent(wc_type = 'Prop', method = 'Layer',  value = ['SAT'])
-    fieldMan=FieldManagement(fieldManParam[0],fieldManParam[1],fieldManParam[2])
-    groundWater=GroundWater(groundParam[0],groundParam[1],groundParam[2])
 
+    soil=CustomSoil(soilParam)
+    groundWater=GroundWater(data['water_table'])
+    initialWater=InitialWaterContent(value = ['SAT'])
     # 获取北京时间
     beijing_time = datetime.now()#+pd.DateOffset(hours=8)
     N=7   #从现在开始向前运行 N 天，也即模拟结束时间为一周后结束
     sim_endDate =beijing_time+ pd.DateOffset(days=N-1)
     sim_endDate=sim_endDate.strftime('%Y/%m/%d')
-
     #SMT | list[float] | 每个生长阶段要维持的土壤水分目标（%TAW）
     irr_mngt=IrrigationManagement(irrigation_method=1,SMT=smt)
-    
-    model = AquaCropModel(sim_start_time=sim_startDate,
+  
+    for crop_param in crop_params:
+
+      area =data['irrigationArea_infor'][3]*(crop_param["areaRatio"]/100)
+      weather_df=Get_weather_data(sim_startDate,location)#维度和经度
+      crop=CustomCrop(crop_param)
+
+      model = AquaCropModel(sim_start_time=sim_startDate,
                           sim_end_time=sim_endDate,
                           weather_df=weather_df,
                           soil=soil,
                           crop=crop,
                           initial_water_content=initialWater,
-                          field_management=fieldMan,
                           irrigation_management=irr_mngt,
                           groundwater=groundWater) # create model
-    model.run_model(till_termination=True)#Run
-    IrrDay=model._outputs.water_flux['IrrDay']
-    length=len(IrrDay)
-    Now_counder=length-N
-    n=0
-    from math import ceil
+      model.run_model(till_termination=True)#Run
 
-    for i in range(Now_counder,length):
-      date=beijing_time+ pd.DateOffset(days=n)
-      date=date.strftime('%Y-%m-%d')
-      n=n+1
-      if IrrDay.at[i] !=0: #要剔除非生长时间和最后一天才是作物历史灌溉记录
-        is_irritated=1
-        new_Row=(app_tables.user_irri_decisions.get(GetTime=beijing_time.strftime('%Y-%m-%d'),User=current_user)
-               or app_tables.user_irri_decisions.add_row(GetTime=beijing_time.strftime('%Y-%m-%d'),User=current_user))
-        new_Row["decision_date"]=date
-        new_Row["irrigation"] =ceil(IrrDay.at[i]*area*0.6666667)#亩的单位要换算
-        new_Row["phoneNumber"]=current_user['phoneNumber']
+      IrrDay=model._outputs.water_flux['IrrDay']
+      length=len(IrrDay)
+      Now_counder=length-N
+      n=0
+      from math import ceil
+
+      for i in range(Now_counder,length):
+        date=beijing_time+ pd.DateOffset(days=n)
+        date=date.strftime('%Y-%m-%d')
+        n=n+1
+        if IrrDay.at[i] !=0: #要剔除非生长时间和最后一天才是作物历史灌溉记录
+          is_irritated=1
+          new_Row=(app_tables.irrigation_decisions.get(submit_time=beijing_time.strftime('%Y-%m-%d'),User=current_user)
+                or app_tables.irrigation_decisions.add_row(submit_time=beijing_time.strftime('%Y-%m-%d'),User=current_user))
+          new_Row['irrigation_date']=date
+          new_Row['irrigation_volume'] =ceil(IrrDay.at[i]*area*0.6666667)#亩的单位要换算
+          new_Row['crop_name']=crop_param['cropName']
     
     return is_irritated
 

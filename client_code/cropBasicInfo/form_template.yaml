@@ -53,7 +53,7 @@ components_by_slot:
       event_bindings: {change_end: slider_1_change_end}
       layout_properties: {grid_position: 'EETTXL,YVQLZE'}
       name: slider_1
-      properties: {max: 100, show_label: true, value: 50}
+      properties: {max: 100, show_label: true, show_markers: false, value: 50}
       type: form:dep_lin1x4oec0ytd:_Components.Slider
     - event_bindings: {click: button_1_click}
       layout_properties: {grid_position: 'HHYTRH,QUVVJX'}

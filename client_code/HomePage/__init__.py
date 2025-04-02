@@ -49,7 +49,7 @@ class HomePage(HomePageTemplate):
     if user is None:
       Notification('请先登录再尝试！').show()
     else:
-      open_form()
+      open_form('irrigationPage')
     
 
 
