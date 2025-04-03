@@ -85,3 +85,9 @@ class cropBasicInfo(cropBasicInfoTemplate):
     """This method is called when the form is removed from the page"""
     if self.repeating_panel_1.items is not None and self.repeating_panel_1.items !=[]:
       anvil.server.call('launch_save_Zhikaikou_data','crop_infor',self.repeating_panel_1.items)
+
+  def slider_1_change(self, **event_args):
+    """This method is called when the value of the component is changed"""
+    self.text_2.text=str(self.slider_1.value)+'%'
+
+ 
