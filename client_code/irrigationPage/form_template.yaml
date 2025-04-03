@@ -20,21 +20,19 @@ components_by_slot:
       type: DataRowPanel
     - components:
       - layout_properties: {slot: card-content-slot}
-        name: button_1
-        properties: {appearance: text, background_color: '', font_size: 20, icon: 'mi:water_pump', icon_color: '#0905f5', icon_size: 70, text: 上次灌溉, text_color: '#000000'}
-        type: form:dep_lin1x4oec0ytd:_Components.Button
+        name: menu_item_1
+        properties: {bold: false, font_size: 15, leading_icon: 'mi:water_pump', leading_icon_color: '#4700cc', leading_icon_size: 70, text: 上次灌溉, trailing_icon: 'mi:ads_click', trailing_text: ''}
+        type: form:dep_lin1x4oec0ytd:_Components.MenuItem
       - components:
         - components:
-          - event_bindings: {click: button_4_click}
-            layout_properties: {slot: card-content-slot}
-            name: button_4
-            properties: {align: full, appearance: text, background_color: '', icon: 'mi:water_full', icon_align: left, icon_color: '#2b00c7', icon_size: 20}
-            type: form:dep_lin1x4oec0ytd:_Components.Button
-          - event_bindings: {click: button_5_click}
-            layout_properties: {slot: card-content-slot}
-            name: button_5
-            properties: {align: full, appearance: text, icon: 'mi:timer', icon_color: '#500202', icon_size: 20}
-            type: form:dep_lin1x4oec0ytd:_Components.Button
+          - layout_properties: {slot: card-content-slot}
+            name: text_1
+            properties: {font_size: 20, icon: 'mi:water_full', icon_size: 20}
+            type: form:dep_lin1x4oec0ytd:_Components.Text
+          - layout_properties: {slot: card-content-slot}
+            name: text_1_copy
+            properties: {font_size: 20, icon: 'mi:timer', icon_size: 20}
+            type: form:dep_lin1x4oec0ytd:_Components.Text
           layout_properties: {slot: card-content-container-slot}
           name: card_1
           properties: {}
@@ -43,25 +41,26 @@ components_by_slot:
         name: card_content_container_1
         properties: {}
         type: form:dep_lin1x4oec0ytd:_Components.Card.CardContentContainer
+      event_bindings: {click: interactive_card_1_click}
       layout_properties: {grid_position: 'DDFTLU,QLXYFP'}
       name: interactive_card_1
-      properties: {}
+      properties: {enabled: true}
       type: form:dep_lin1x4oec0ytd:_Components.InteractiveCard
     - components:
       - layout_properties: {slot: card-content-slot}
         name: button_1_copy
-        properties: {appearance: text, background_color: '', font_size: 20, icon: 'mi:water_pump', icon_color: '#0905f5', icon_size: 70, text: 下次灌溉, text_color: '#000000'}
+        properties: {appearance: text, background_color: '', bold: false, font_size: 15, icon: 'mi:water_pump', icon_color: '#0905f5', icon_size: 70, text: 下次灌溉, text_color: '#000000'}
         type: form:dep_lin1x4oec0ytd:_Components.Button
       - components:
         - components:
           - layout_properties: {slot: card-content-slot}
-            name: button_4_copy
-            properties: {align: full, appearance: text, background_color: '', icon: 'mi:water_full', icon_align: left, icon_color: '#2b00c7', icon_size: 20}
-            type: form:dep_lin1x4oec0ytd:_Components.Button
+            name: text_2
+            properties: {font_size: 20, icon: 'mi:water_full', icon_size: 18}
+            type: form:dep_lin1x4oec0ytd:_Components.Text
           - layout_properties: {slot: card-content-slot}
-            name: button_5_copy
-            properties: {align: full, appearance: text, icon: 'mi:timer', icon_color: '#500202', icon_size: 20}
-            type: form:dep_lin1x4oec0ytd:_Components.Button
+            name: text_3
+            properties: {font_size: 20, icon: 'mi:timer', icon_size: 20}
+            type: form:dep_lin1x4oec0ytd:_Components.Text
           event_bindings: {}
           layout_properties: {slot: card-content-container-slot}
           name: card_1_copy
@@ -73,23 +72,23 @@ components_by_slot:
         type: form:dep_lin1x4oec0ytd:_Components.Card.CardContentContainer
       layout_properties: {grid_position: 'DDFTLU,QNGSZB'}
       name: interactive_card_2
-      properties: {}
+      properties: {enabled: true}
       type: form:dep_lin1x4oec0ytd:_Components.InteractiveCard
     - components:
       - layout_properties: {slot: card-content-slot}
         name: button_3
-        properties: {appearance: text, font_size: 20, icon: 'mi:water_lux', icon_color: '#6b0000', icon_size: 70, text: 天气状况, text_color: ''}
+        properties: {appearance: text, font_size: 15, icon: 'mi:water_lux', icon_color: '#6b0000', icon_size: 70, text: 天气状况, text_color: ''}
         type: form:dep_lin1x4oec0ytd:_Components.Button
       - components:
         - components:
           - layout_properties: {slot: card-content-slot}
-            name: button_6
-            properties: {align: full, appearance: text, icon: 'mi:thermometer_gain', icon_size: 20}
-            type: form:dep_lin1x4oec0ytd:_Components.Button
+            name: text_4
+            properties: {font_size: 20, icon: 'mi:clear_day', icon_size: 20}
+            type: form:dep_lin1x4oec0ytd:_Components.Text
           - layout_properties: {slot: card-content-slot}
-            name: button_7
-            properties: {align: full, appearance: text, icon: 'mi:nest_farsight_weather', icon_size: 20}
-            type: form:dep_lin1x4oec0ytd:_Components.Button
+            name: text_5
+            properties: {font_size: 20, icon: 'mi:dew_point', icon_size: 18}
+            type: form:dep_lin1x4oec0ytd:_Components.Text
           layout_properties: {slot: card-content-container-slot}
           name: card_2
           properties: {appearance: outlined}
@@ -100,23 +99,19 @@ components_by_slot:
         type: form:dep_lin1x4oec0ytd:_Components.Card.CardContentContainer
       layout_properties: {grid_position: 'DDFTLU,XLGBNB'}
       name: interactive_card_3
-      properties: {}
+      properties: {enabled: true}
       type: form:dep_lin1x4oec0ytd:_Components.InteractiveCard
     - components:
       - layout_properties: {slot: card-content-slot}
         name: button_2
-        properties: {appearance: text, font_size: 17, icon: 'mi:water_voc', icon_color: '#330000', icon_size: 70, text: 土壤含水量}
+        properties: {appearance: text, font_size: 15, icon: 'mi:water_voc', icon_color: '#330000', icon_size: 70, text: 土壤含水量}
         type: form:dep_lin1x4oec0ytd:_Components.Button
       - components:
         - components:
           - layout_properties: {slot: card-content-slot}
-            name: button_8
-            properties: {align: full, appearance: text, icon: 'mi:water_voc'}
-            type: form:dep_lin1x4oec0ytd:_Components.Button
-          - layout_properties: {slot: card-content-slot}
-            name: spacer_2
-            properties: {height: 46}
-            type: Spacer
+            name: text_6
+            properties: {font_size: 40, icon: 'mi:water_voc', icon_size: 38}
+            type: form:dep_lin1x4oec0ytd:_Components.Text
           layout_properties: {slot: card-content-container-slot}
           name: card_3
           properties: {appearance: outlined}
@@ -127,7 +122,7 @@ components_by_slot:
         type: form:dep_lin1x4oec0ytd:_Components.Card.CardContentContainer
       layout_properties: {grid_position: 'DDFTLU,XSCJIZ'}
       name: interactive_card_4
-      properties: {}
+      properties: {enabled: true}
       type: form:dep_lin1x4oec0ytd:_Components.InteractiveCard
     data_bindings: []
     layout_properties: {}

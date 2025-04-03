@@ -190,7 +190,7 @@ def GroundWater(waterTable):
     from aquacrop import GroundWater
     import copy
   
-    if waterTable != []:
+    if  waterTable is not None and waterTable != []:
       Dates=[]
       Values=[]
       #'date':'','depth'
