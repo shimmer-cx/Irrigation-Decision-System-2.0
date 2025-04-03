@@ -209,7 +209,8 @@ def GroundWater(waterTable):
 
 @anvil.server.background_task
 def RunModel(current_user):
-    is_irritated=0#返回值，用于标记是否有灌溉
+    is_irritated='返回值，用于标记模型运行情况'
+  
     from anvil.tables import app_tables
     from aquacrop import AquaCropModel, IrrigationManagement, InitialWaterContent
 
@@ -226,22 +227,28 @@ def RunModel(current_user):
 
     soil=CustomSoil(soilParam)
     groundWater=GroundWater(data['water_table'])
-    initialWater=InitialWaterContent(value = ['SAT'])
+
     # 获取北京时间
-    beijing_time = datetime.now()#+pd.DateOffset(hours=8)
+    beijing_time = datetime.now()+pd.DateOffset(hours=8)
+    nowDate=beijing_time.strftime('%Y-%m-%d')
     N=7   #从现在开始向前运行 N 天，也即模拟结束时间为一周后结束
     sim_endDate =beijing_time+ pd.DateOffset(days=N-1)
     sim_endDate=sim_endDate.strftime('%Y/%m/%d')
     #SMT | list[float] | 每个生长阶段要维持的土壤水分目标（%TAW）
     irr_mngt=IrrigationManagement(irrigation_method=1,SMT=smt)
-  
-    for crop_param in crop_params:
 
-      area =data['irrigationArea_infor'][3]*(crop_param["areaRatio"]/100)
-      weather_df=Get_weather_data(sim_startDate,location)#维度和经度
-      crop=CustomCrop(crop_param)
-
-      model = AquaCropModel(sim_start_time=sim_startDate,
+    #要区分是否为第一次模拟
+    if sim_startDate != nowDate:
+      
+      initialWater=InitialWaterContent(value = ['SAT'])
+      
+      for crop_param in crop_params:
+        
+        crop=CustomCrop(crop_param)
+        area =data['irrigationArea_infor'][3]*(crop_param["areaRatio"]/100)
+        weather_df=Get_weather_data(sim_startDate,location)#维度和经度
+        
+        model = AquaCropModel(sim_start_time=sim_startDate,
                           sim_end_time=sim_endDate,
                           weather_df=weather_df,
                           soil=soil,
@@ -249,25 +256,73 @@ def RunModel(current_user):
                           initial_water_content=initialWater,
                           irrigation_management=irr_mngt,
                           groundwater=groundWater) # create model
-      model.run_model(till_termination=True)#Run
+        model.run_model(till_termination=True)#Run
+      
+        water_flux=model._outputs.water_flux
+        water_flux=water_flux[(water_flux['season_counter'] ==0)&(water_flux['time_step_counter'] !=0 )]#使用布尔表达式：根据条件过滤 DataFrame
+      
+        irrigation =list( water_flux['IrrDay'])
+        for i in range(0, len(irrigation)):
+          irrigation[i]=irrigation[i]*area*0.6666667         #亩的单位要换算
+          
+        water_content =list(  water_flux['WaterContent'])
+        actual_transpiration =list(  water_flux['actual_evapotranspiration'])
 
-      IrrDay=model._outputs.water_flux['IrrDay']
-      length=len(IrrDay)
-      Now_counder=length-N
-      n=0
-      from math import ceil
+        new_Row=app_tables.irrigation_decisions.add_row(submit_time=nowDate,User=current_user)#第一次模拟，第一次提交！
+        new_Row['actual_transpiration']=actual_transpiration
+        new_Row['irrigation']=irrigation
+        new_Row['water_content']=water_content
+    else:
+      
+      sim_startDate=nowDate
+      initialWater=InitialWaterContent(value = ['SAT'])#要将土壤初始含水量设置到上次计算出来的结果，暂未修改
+      
+      for crop_param in crop_params:
 
-      for i in range(Now_counder,length):
-        date=beijing_time+ pd.DateOffset(days=n)
-        date=date.strftime('%Y-%m-%d')
-        n=n+1
-        if IrrDay.at[i] !=0: #要剔除非生长时间和最后一天才是作物历史灌溉记录
-          is_irritated=1
-          new_Row=(app_tables.irrigation_decisions.get(submit_time=beijing_time.strftime('%Y-%m-%d'),User=current_user)
-                or app_tables.irrigation_decisions.add_row(submit_time=beijing_time.strftime('%Y-%m-%d'),User=current_user))
-          new_Row['irrigation_date']=date
-          new_Row['irrigation_volume'] =ceil(IrrDay.at[i]*area*0.6666667)#亩的单位要换算
-          new_Row['crop_name']=crop_param['cropName']
+        area =data['irrigationArea_infor'][3]*(crop_param["areaRatio"]/100)
+        weather_df=Get_weather_data(sim_startDate,location)#维度和经度#              #似乎要修改
+        crop=CustomCrop(crop_param)
+
+        model = AquaCropModel(sim_start_time=sim_startDate,
+                          sim_end_time=sim_endDate,
+                          weather_df=weather_df,
+                          soil=soil,
+                          crop=crop,
+                          initial_water_content=initialWater,
+                          irrigation_management=irr_mngt,
+                          groundwater=groundWater) # create model
+        model.run_model(till_termination=True)#Run
+      
+        water_flux=model._outputs.water_flux
+        water_flux=water_flux[water_flux['time_step_counter'] !=0 ]#使用布尔表达式：根据条件过滤 DataFrame
+      
+        irrigation =list( water_flux['IrrDay'])
+        for i in range(0, len(irrigation)):
+          irrigation[i]=irrigation[i]*area*0.6666667         #亩的单位要换算
+          
+        water_content =list(  water_flux['WaterContent'])
+        actual_transpiration =list(  water_flux['actual_evapotranspiration'])
+        #此处以下还未进行对应修改：
+        new_Row=app_tables.irrigation_decisions.add_row(submit_time=nowDate,User=current_user)#非第一次模拟，非第一次提交！
+        new_Row['actual_transpiration']=actual_transpiration
+        new_Row['irrigation']=irrigation
+        new_Row['water_content']=water_content      
+      # length=len(IrrDay)
+      # Now_counder=length-N
+      # n=0
+      # from math import ceil
+
+      # for i in range(Now_counder,length):
+      #   date=beijing_time+ pd.DateOffset(days=n)
+      #   date=date.strftime('%Y-%m-%d')
+      #   n=n+1
+      #   if IrrDay.at[i] !=0: #要剔除非生长时间和最后一天才是作物历史灌溉记录
+      #     is_irritated=1
+      #     new_Row=(app_tables.irrigation_decisions.get(submit_time=beijing_time.strftime('%Y-%m-%d'),User=current_user)
+      #           or app_tables.irrigation_decisions.add_row(submit_time=beijing_time.strftime('%Y-%m-%d'),User=current_user))
+      #     new_Row['irrigation_date']=date
+      #     new_Row['irrigation_volume'] =ceil(IrrDay.at[i]*area*0.6666667)#亩的单位要换算
+      #     new_Row['crop_name']=crop_param['cropName']
     
     return is_irritated
 

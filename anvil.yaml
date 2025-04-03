@@ -1,5 +1,15 @@
 allow_embedding: false
 db_schema:
+  crop_growth_outputs:
+    client: none
+    columns: []
+    server: full
+    title: crop_growth_outputs
+  final_stats_outputs:
+    client: none
+    columns: []
+    server: full
+    title: final_stats_outputs
   irrigation_decisions:
     client: none
     columns:
@@ -10,15 +20,18 @@ db_schema:
     - admin_ui: {order: 1, width: 200}
       name: submit_time
       type: string
-    - admin_ui: {order: 2, width: 200}
-      name: irrigation_date
-      type: string
     - admin_ui: {order: 1.5, width: 200}
       name: crop_name
       type: string
-    - admin_ui: {order: 3, width: 200}
-      name: irrigation_volume
-      type: number
+    - admin_ui: {order: 4, width: 200}
+      name: irrigation
+      type: simpleObject
+    - admin_ui: {order: 5, width: 200}
+      name: water_content
+      type: simpleObject
+    - admin_ui: {order: 6, width: 200}
+      name: actual_transpiration
+      type: simpleObject
     server: full
     title: Irrigation_decisions
   users:
@@ -50,6 +63,11 @@ db_schema:
       type: datetime
     server: full
     title: Users
+  water_storage_outputs:
+    client: none
+    columns: []
+    server: full
+    title: water_storage_outputs
   zhikaikouuser_data:
     client: none
     columns:
@@ -95,5 +113,5 @@ services:
 - client_config: {allow_remember_me: true, allow_signup: true, confirm_email: false, enable_automatically: true, remember_me_days: 30, use_email: true}
   server_config: {user_table: users}
   source: /runtime/services/anvil/users.yml
-startup: {module: irrigationPage, type: form}
+startup: {module: HomePage, type: form}
 startup_form: null
