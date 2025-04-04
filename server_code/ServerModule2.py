@@ -209,15 +209,14 @@ def GroundWater(waterTable):
 
 @anvil.server.background_task
 def RunModel(current_user):
-    is_irritated='返回值，用于标记模型运行情况'
+    
   
     from anvil.tables import app_tables
     from aquacrop import AquaCropModel, IrrigationManagement, InitialWaterContent
 
     data = app_tables.zhikaikouuser_data.get(User=current_user)  
-  
     if data is None or current_user is None:
-      return  -1#新用户或从没有提交过模型数据的就不要执行以下模块
+      return  '新用户或从没有提交过模型数据的就不要执行以下模块'
     
     sim_startDate = data['irrigationArea_infor'][-1]
     location = data['irrigationArea_infor'][1:3]
@@ -230,7 +229,7 @@ def RunModel(current_user):
 
     # 获取北京时间
     beijing_time = datetime.now()+pd.DateOffset(hours=8)
-
+    nowDate=beijing_time.strftime('%Y-%m-%d')
     N=7   #从现在开始向前运行 N 天，也即模拟结束时间为一周后结束
     sim_endDate =beijing_time+ pd.DateOffset(days=N-1)
     sim_endDate=sim_endDate.strftime('%Y/%m/%d')
@@ -261,7 +260,8 @@ def RunModel(current_user):
         model.run_model(till_termination=True)#Run
       
         water_flux=model._outputs.water_flux
-        water_flux=water_flux[(water_flux['season_counter'] ==0)&(water_flux['time_step_counter'] !=0 )]#使用布尔表达式：根据条件过滤 DataFrame
+        #water_flux=water_flux[ water_flux['season_counter'] ==0]#使用布尔表达式：根据条件过滤 DataFrame
+        water_flux=water_flux.iloc[:-1]
         irrigation =list( water_flux['IrrDay'])
         for i in range(0, len(irrigation)):
           irrigation[i]=irrigation[i]*area*0.6666667         #亩的单位要换算
@@ -277,11 +277,12 @@ def RunModel(current_user):
         new_Row['irrigation']=irrigation
         new_Row['water_content']=water_content
         new_Row['InitialWaterContent_Num']=water_storage
+        new_Row['submit_time']=nowDate
         new_Row['is_firstRun'] = False
       else:
         
         sim_startDate = beijing_time- pd.DateOffset(days=1)
-        sim_startDate= sim_startDate.strftime('%Y-%m-%d')
+        sim_startDate= sim_startDate.strftime('%Y/%m/%d')
         Num= new_Row['InitialWaterContent_Num']
         initialWater=InitialWaterContent(wc_type = 'Prop',
                                         method = 'Layer',
@@ -299,19 +300,25 @@ def RunModel(current_user):
         model.run_model(till_termination=True)#Run
       
         water_flux=model._outputs.water_flux
-        water_flux=water_flux[water_flux['time_step_counter'] !=0 ]#使用布尔表达式：根据条件过滤 DataFrame
+        #water_flux=water_flux[ water_flux['season_counter'] ==0]#使用布尔表达式：根据条件过滤 DataFrame
+        water_flux=water_flux.iloc[:-1]#删除最后一行0行
       
         irrigation =list( water_flux['IrrDay'])
         for i in range(0, len(irrigation)):
           irrigation[i]=irrigation[i]*area*0.6666667         #亩的单位要换算
           
+        water_storage=model._outputs.water_storage         
+        water_storage=water_storage.iloc[1,3:15]#获取当日的土壤水分含量,1：留下今天的Num
+        water_storage=list(water_storage)
+        
         water_content =list(  water_flux['WaterContent'])
         actual_transpiration =list(  water_flux['actual_evapotranspiration'])
-        #此处以下还未进行对应修改：
 
-        new_Row['irrigation']=irrigation
-        new_Row['water_content']=water_content      
+        new_Row['irrigation']=new_Row['irrigation'][0:-7]+irrigation
+        new_Row['water_content']= new_Row['water_content'][0:-7]+water_content
+        new_Row['actual_transpiration']=new_Row['actual_transpiration'][0:-7]+actual_transpiration
+        new_Row['InitialWaterContent_Num'] = water_storage
+        new_Row['submit_time']=nowDate
 
-    
-    return is_irritated
+    return '计算完成'
 
