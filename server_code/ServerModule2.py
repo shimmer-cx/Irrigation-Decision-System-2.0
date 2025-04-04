@@ -215,9 +215,9 @@ def RunModel(current_user):
     from aquacrop import AquaCropModel, IrrigationManagement, InitialWaterContent
 
     data = app_tables.zhikaikouuser_data.get(User=current_user)  
-    
+  
     if data is None or current_user is None:
-     return  -1#新用户或从没有提交过模型数据的就不要执行以下模块
+      return  -1#新用户或从没有提交过模型数据的就不要执行以下模块
     
     sim_startDate = data['irrigationArea_infor'][-1]
     location = data['irrigationArea_infor'][1:3]
@@ -230,24 +230,26 @@ def RunModel(current_user):
 
     # 获取北京时间
     beijing_time = datetime.now()+pd.DateOffset(hours=8)
-    nowDate=beijing_time.strftime('%Y-%m-%d')
+
     N=7   #从现在开始向前运行 N 天，也即模拟结束时间为一周后结束
     sim_endDate =beijing_time+ pd.DateOffset(days=N-1)
     sim_endDate=sim_endDate.strftime('%Y/%m/%d')
     #SMT | list[float] | 每个生长阶段要维持的土壤水分目标（%TAW）
     irr_mngt=IrrigationManagement(irrigation_method=1,SMT=smt)
-
+    weather_df=Get_weather_data(sim_startDate,location)#维度和经度
+  
     #要区分是否为第一次模拟
-    if sim_startDate != nowDate:
+    for crop_param in crop_params:
       
-      initialWater=InitialWaterContent(value = ['SAT'])
+      new_Row=(app_tables.irrigation_decisions.get(crop_name=crop_param['cropName'],User=current_user)
+               or app_tables.irrigation_decisions.add_row(crop_name=crop_param['cropName'],is_firstRun=True,User=current_user))
       
-      for crop_param in crop_params:
+      crop=CustomCrop(crop_param)
+      area =data['irrigationArea_infor'][3]*(crop_param["areaRatio"]/100)
+
+      if new_Row['is_firstRun'] is True:
         
-        crop=CustomCrop(crop_param)
-        area =data['irrigationArea_infor'][3]*(crop_param["areaRatio"]/100)
-        weather_df=Get_weather_data(sim_startDate,location)#维度和经度
-        
+        initialWater=InitialWaterContent(value = ['SAT'])
         model = AquaCropModel(sim_start_time=sim_startDate,
                           sim_end_time=sim_endDate,
                           weather_df=weather_df,
@@ -268,31 +270,24 @@ def RunModel(current_user):
         lenth=water_storage.shape(water_storage)[0]
         water_storage=water_storage.iloc[lenth-7,3:15]#获取当日的土壤水分含量
         water_storage=list(water_storage)
-          
         water_content =list(  water_flux['WaterContent'])
         actual_transpiration =list(  water_flux['actual_evapotranspiration'])
 
-        new_Row=app_tables.irrigation_decisions.add_row(submit_time=nowDate,User=current_user)#第一次模拟，第一次提交！
         new_Row['actual_transpiration']=actual_transpiration
         new_Row['irrigation']=irrigation
         new_Row['water_content']=water_content
         new_Row['InitialWaterContent_Num']=water_storage
-    else:
-      
-      # sim_startDate=nowDate
-      lastData=app_tables.irrigation_decisions.get(User=current_user)
-      Num=lastData['InitialWaterContent_Num']
-      initialWater=InitialWaterContent(wc_type = 'Prop',
+        new_Row['is_firstRun'] = False
+      else:
+        
+        sim_startDate = beijing_time- pd.DateOffset(days=1)
+        sim_startDate= sim_startDate.strftime('%Y-%m-%d')
+        Num= new_Row['InitialWaterContent_Num']
+        initialWater=InitialWaterContent(wc_type = 'Prop',
                                         method = 'Layer',
                                         depth_layer= [1,2,3,4,5,6,7,8,9,10,11,12],
                                         value = Num )#要将土壤初始含水量设置到上次计算出来的结果，暂未修改
       
-      for crop_param in crop_params:
-
-        area =data['irrigationArea_infor'][3]*(crop_param["areaRatio"]/100)
-        weather_df=Get_weather_data(sim_startDate,location)#维度和经度#              #似乎要修改
-        crop=CustomCrop(crop_param)
-
         model = AquaCropModel(sim_start_time=sim_startDate,
                           sim_end_time=sim_endDate,
                           weather_df=weather_df,
@@ -314,24 +309,9 @@ def RunModel(current_user):
         actual_transpiration =list(  water_flux['actual_evapotranspiration'])
         #此处以下还未进行对应修改：
 
-        lastData['irrigation']=irrigation
-        lastData['water_content']=water_content      
-      # length=len(IrrDay)
-      # Now_counder=length-N
-      # n=0
-      # from math import ceil
+        new_Row['irrigation']=irrigation
+        new_Row['water_content']=water_content      
 
-      # for i in range(Now_counder,length):
-      #   date=beijing_time+ pd.DateOffset(days=n)
-      #   date=date.strftime('%Y-%m-%d')
-      #   n=n+1
-      #   if IrrDay.at[i] !=0: #要剔除非生长时间和最后一天才是作物历史灌溉记录
-      #     is_irritated=1
-      #     new_Row=(app_tables.irrigation_decisions.get(submit_time=beijing_time.strftime('%Y-%m-%d'),User=current_user)
-      #           or app_tables.irrigation_decisions.add_row(submit_time=beijing_time.strftime('%Y-%m-%d'),User=current_user))
-      #     new_Row['irrigation_date']=date
-      #     new_Row['irrigation_volume'] =ceil(IrrDay.at[i]*area*0.6666667)#亩的单位要换算
-      #     new_Row['crop_name']=crop_param['cropName']
     
     return is_irritated
 
