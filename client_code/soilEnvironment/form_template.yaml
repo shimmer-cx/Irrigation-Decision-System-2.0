@@ -145,7 +145,8 @@ components_by_slot:
     name: navigation_link_2
     properties: {icon: 'mi:potted_plant', navigate_to: cropBasicInfo, text: 作物基本信息}
     type: form:dep_lin1x4oec0ytd:_Components.NavigationLink
-  - layout_properties: {}
+  - event_bindings: {}
+    layout_properties: {}
     name: navigation_link_3
     properties: {icon: 'mi:solar_power', selected: true, text: 土壤基本信息}
     type: form:dep_lin1x4oec0ytd:_Components.NavigationLink

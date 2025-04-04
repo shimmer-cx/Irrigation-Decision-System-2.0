@@ -63,7 +63,7 @@ class cropBasicInfo(cropBasicInfoTemplate):
 
       self.repeating_panel_1.items= self.repeating_panel_1.items + copy.deepcopy( tempRow ) 
       #更新组件显示
-      self.cropName_drop_down.selected_value='玉米'
+      # self.cropName_drop_down.selected_value=''
       self.text_1.text=''
       self.text_box_2.text=''
       self.text_box_3.text=''
