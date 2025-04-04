@@ -32,6 +32,9 @@ db_schema:
     - admin_ui: {order: 6, width: 200}
       name: actual_transpiration
       type: simpleObject
+    - admin_ui: {order: 7, width: 200}
+      name: InitialWaterContent_Num
+      type: simpleObject
     server: full
     title: Irrigation_decisions
   users:

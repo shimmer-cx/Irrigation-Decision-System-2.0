@@ -260,10 +260,14 @@ def RunModel(current_user):
       
         water_flux=model._outputs.water_flux
         water_flux=water_flux[(water_flux['season_counter'] ==0)&(water_flux['time_step_counter'] !=0 )]#使用布尔表达式：根据条件过滤 DataFrame
-      
         irrigation =list( water_flux['IrrDay'])
         for i in range(0, len(irrigation)):
           irrigation[i]=irrigation[i]*area*0.6666667         #亩的单位要换算
+          
+        water_storage=model._outputs.water_storage         
+        lenth=water_storage.shape(water_storage)[0]
+        water_storage=water_storage.iloc[lenth-7,3:15]#获取当日的土壤水分含量
+        water_storage=list(water_storage)
           
         water_content =list(  water_flux['WaterContent'])
         actual_transpiration =list(  water_flux['actual_evapotranspiration'])
@@ -272,10 +276,16 @@ def RunModel(current_user):
         new_Row['actual_transpiration']=actual_transpiration
         new_Row['irrigation']=irrigation
         new_Row['water_content']=water_content
+        new_Row['InitialWaterContent_Num']=water_storage
     else:
       
-      sim_startDate=nowDate
-      initialWater=InitialWaterContent(value = ['SAT'])#要将土壤初始含水量设置到上次计算出来的结果，暂未修改
+      # sim_startDate=nowDate
+      lastData=app_tables.irrigation_decisions.get(User=current_user)
+      Num=lastData['InitialWaterContent_Num']
+      initialWater=InitialWaterContent(wc_type = 'Prop',
+                                        method = 'Layer',
+                                        depth_layer= [1,2,3,4,5,6,7,8,9,10,11,12],
+                                        value = Num )#要将土壤初始含水量设置到上次计算出来的结果，暂未修改
       
       for crop_param in crop_params:
 
@@ -303,10 +313,9 @@ def RunModel(current_user):
         water_content =list(  water_flux['WaterContent'])
         actual_transpiration =list(  water_flux['actual_evapotranspiration'])
         #此处以下还未进行对应修改：
-        new_Row=app_tables.irrigation_decisions.add_row(submit_time=nowDate,User=current_user)#非第一次模拟，非第一次提交！
-        new_Row['actual_transpiration']=actual_transpiration
-        new_Row['irrigation']=irrigation
-        new_Row['water_content']=water_content      
+
+        lastData['irrigation']=irrigation
+        lastData['water_content']=water_content      
       # length=len(IrrDay)
       # Now_counder=length-N
       # n=0
