@@ -24,12 +24,17 @@ def save_Zhikaikou_data(current_user,whatData,data):
       user_row[whatData]=data
 
 @anvil.server.callable
+@anvil.tables.in_transaction
 def launch_save_Zhikaikou_data(whatData,data):
     current_user = anvil.users.get_user()
     anvil.server.launch_background_task('save_Zhikaikou_data',current_user,whatData,data)
 
-
-
+@anvil.server.callable
+@anvil.tables.in_transaction
+def get_irrigation_info():
+    current_user = anvil.users.get_user()
+    if current_user is not None:
+      return app_tables.irrigation_decisions.search(User=current_user)
   
 # This is a server module. It runs on the Anvil server,
 # rather than in the user's browser.

@@ -9,8 +9,20 @@ from anvil.tables import app_tables
 
 class irrigationPage(irrigationPageTemplate):
   def __init__(self, **properties):
+    self.item=anvil.server.call('get_irrigation_info')
     # Set Form properties and Data Bindings.
     self.init_components(**properties)
+    if len(self.item)==1:
+      self.button_5.visible=False
+      self.button_4.visible=False
+      # data=self.item[0]
+      # for irri in data['irrigation'].reverse():
+      #   if irri>0
+          
+        
+    else:
+      self.button_5.visible=True
+      self.button_4.visible=True
 
     # Any code you write here will run before the form opens.
 
@@ -23,6 +35,9 @@ class irrigationPage(irrigationPageTemplate):
     user=anvil.users.get_user()
     infor=anvil.server.call('RunModel',user)
     Notification(infor).show()
+
+    
+    
 
 
 

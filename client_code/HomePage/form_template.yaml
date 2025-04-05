@@ -8,7 +8,13 @@ components_by_slot:
     - event_bindings: {click: link_1_click}
       layout_properties: {slot: anvil-m3-buttonMenu-slot}
       name: link_1
-      properties: {font_size: 20, icon: 'mi:assignment_add', icon_size: 30, text: 填写信息以确定灌溉}
+      properties:
+        font_size: 20
+        icon: mi:assignment_add
+        icon_size: 30
+        spacing:
+          padding: [null, 0, null, null]
+        text: 填写信息确定灌溉计划
       type: form:dep_lin1x4oec0ytd:_Components.Link
     - layout_properties: {slot: anvil-m3-buttonMenu-slot}
       name: spacer_5
@@ -46,7 +52,7 @@ components_by_slot:
     - components:
       - layout_properties: {slot: card-content-container-slot}
         name: heading_2
-        properties: {align: left, bold: false, italic: true, text: 如何高效的利用有限水之源灌溉农田？基于AquaCrop的灌溉决策支持系统，给出我们的解决方案！}
+        properties: {align: left, bold: false, italic: true, text: 如何高效的利用有限水资源灌溉农田？基于AquaCrop的灌溉决策支持系统，给出我们的解决方案！}
         type: form:dep_lin1x4oec0ytd:_Components.Heading
       - components:
         - event_bindings: {mouse_leave: image_2_mouse_leave, mouse_up: image_2_mouse_up}
