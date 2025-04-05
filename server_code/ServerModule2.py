@@ -9,6 +9,9 @@ from retry_requests import retry
 
 from datetime import datetime
 # from zoneinfo import ZoneInfo
+from anvil.tables import app_tables
+from aquacrop import AquaCropModel, IrrigationManagement, InitialWaterContent, GroundWater,Crop,Soil 
+import copy
 
 def GetForecastWeather(lat,lon,Day):#获取预报气象数据
    
@@ -113,23 +116,31 @@ def GetHistoryWeather(lat,lon,start_date,end_dat):#获取历史气象数据
 
 def Get_weather_data(simStartDate, location):
     
-    sim_Start_Date=datetime.strptime(simStartDate, "%Y/%m/%d")
-    sim_Start_Date=sim_Start_Date.strftime('%Y-%m-%d')
-
-    # 获取北京时间
-    beijing_time = datetime.now()
+    Start_Date=datetime.strptime(simStartDate, "%Y/%m/%d")
+    sim_Start_Date=Start_Date.strftime('%Y-%m-%d')
     Day=3#历史气象数据最晚到3天前的数据
-    end_date =beijing_time-pd.DateOffset(days=Day+1)
-    end_date=end_date.strftime('%Y-%m-%d')
+    # 获取北京时间
+    beijing_time = datetime.now()+pd.DateOffset(hours=8)
+  
+    if beijing_time-sim_Start_Date >= pd.DateOffset(days=Day):
 
-    #获取历史气象数据
-    history_weather=GetHistoryWeather(location[0],location[1],sim_Start_Date,end_date)
-    #获取预测气象数据
-    forecast_weather=GetForecastWeather(location[0],location[1],Day)
-    return pd.concat([history_weather,forecast_weather])
+      end_date =beijing_time-pd.DateOffset(days=Day)
+      end_date=end_date.strftime('%Y-%m-%d')
+      #获取历史气象数据
+      history_weather=GetHistoryWeather(location[0],location[1],sim_Start_Date,end_date)
+      #获取预测气象数据
+      forecast_weather=GetForecastWeather(location[0],location[1],Day-1)
+      return pd.concat([history_weather,forecast_weather])
+    else:
+
+      #获取预测气象数据(里面包含了2天的历史数据)
+      forecast_weather=GetForecastWeather(location[0],location[1],Day-1)
+      return forecast_weather
+      
+   
 
 def CustomSoil(soilParam):
-    from aquacrop import Soil
+
     soilType =soilParam[0]
     Sand =soilParam[1]
     Clay =soilParam[2]
@@ -166,8 +177,7 @@ def CustomSoil(soilParam):
     return custom
 
 def CustomCrop(crop_param):
-    from aquacrop import Crop
-  
+
     crop_name=crop_param['cropName']
     CropType=crop_param['Type']
     planting_date=crop_param['plantDate']
@@ -186,9 +196,7 @@ def CustomCrop(crop_param):
       crop= Crop(built_inCropTypes[crop_name],planting_date=planting_date,harvest_date=harvest_date)
     return crop
 
-def GroundWater(waterTable):
-    from aquacrop import GroundWater
-    import copy
+def CustomGroundWater(waterTable):
   
     if  waterTable is not None and waterTable != []:
       Dates=[]
@@ -209,10 +217,7 @@ def GroundWater(waterTable):
 
 @anvil.server.background_task
 def RunModel(current_user):
-    
-  
-    from anvil.tables import app_tables
-    from aquacrop import AquaCropModel, IrrigationManagement, InitialWaterContent
+     
 
     data = app_tables.zhikaikouuser_data.get(User=current_user)  
     if data is None or current_user is None:
@@ -225,7 +230,7 @@ def RunModel(current_user):
     smt =data['soil_infor'][-1:-5]
 
     soil=CustomSoil(soilParam)
-    groundWater=GroundWater(data['water_table'])
+    groundWater=CustomGroundWater(data['water_table'])
 
     # 获取北京时间
     beijing_time = datetime.now()+pd.DateOffset(hours=8)
@@ -237,7 +242,6 @@ def RunModel(current_user):
     irr_mngt=IrrigationManagement(irrigation_method=1,SMT=smt)
     weather_df=Get_weather_data(sim_startDate,location)#维度和经度
   
-    #要区分是否为第一次模拟
     for crop_param in crop_params:
       
       new_Row=(app_tables.irrigation_decisions.get(crop_name=crop_param['cropName'],User=current_user)
@@ -246,7 +250,7 @@ def RunModel(current_user):
       crop=CustomCrop(crop_param)
       area =data['irrigationArea_infor'][3]*(crop_param["areaRatio"]/100)
 
-      if new_Row['is_firstRun'] is True:
+      if new_Row['is_firstRun'] is True:    #要区分是否为第一次模拟
         
         initialWater=InitialWaterContent(value = ['SAT'])
         model = AquaCropModel(sim_start_time=sim_startDate,
