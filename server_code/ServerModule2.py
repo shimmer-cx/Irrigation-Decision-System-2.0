@@ -228,7 +228,7 @@ def RunModel(current_user):
     location = data['irrigationArea_infor'][1:3]
     crop_params =data['crop_infor']
     soilParam =data['soil_infor'][0:7]
-    smt =data['soil_infor'][-1:-5]
+    smt =data['soil_infor'][7:11]
 
     soil=CustomSoil(soilParam)
     groundWater=CustomGroundWater(data['water_table'])
@@ -271,18 +271,18 @@ def RunModel(current_user):
         water_flux=water_flux.iloc[:-1]
         irrigation =list( water_flux['IrrDay'])
         for i in range(0, len(irrigation)):
-          irrigation[i]=irrigation[i]*area*0.6666667         #亩的单位要换算
+          irrigation[i]=round(irrigation[i]*area*0.6666667, 2)      #亩的单位要换算
           
         water_storage=model._outputs.water_storage         
-        lenth=water_storage.shape(water_storage)[0]
-        water_storage=water_storage.iloc[lenth-7,3:15]#获取当日的土壤水分含量
+        lenth=water_storage.shape[0]
+        water_storage=water_storage.iloc[lenth-8,3:15]#获取当日的土壤水分含量
         water_storage=list(water_storage)
-        water_content =list(  water_flux['WaterContent'])
-        actual_transpiration =list(  water_flux['actual_evapotranspiration'])
+        water_content =list(  water_flux['Wr'])#'Wr作物根区水分'
+        actual_transpiration =list(  water_flux['Tr'])#作物蒸腾量（mm）。
 
-        new_Row['actual_transpiration']=actual_transpiration
+        new_Row['actual_transpiration']=[round(x, 2) for x in actual_transpiration]
         new_Row['irrigation']=irrigation
-        new_Row['water_content']=water_content
+        new_Row['water_content']=[round(x, 2) for x in water_content]
         new_Row['InitialWaterContent_Num']=water_storage
         new_Row['submit_time']=nowTime
         new_Row['is_firstRun'] = False
@@ -319,12 +319,12 @@ def RunModel(current_user):
         water_storage=water_storage.iloc[1,3:15]#获取当日的土壤水分含量,1：留下今天的Num
         water_storage=list(water_storage)
         
-        water_content =list(  water_flux['WaterContent'])
-        actual_transpiration =list(  water_flux['actual_evapotranspiration'])
+        water_content =list(  water_flux['Wr'])
+        actual_transpiration =list(  water_flux['Tr'])
 
         new_Row['irrigation']=new_Row['irrigation'][0:-7]+irrigation
-        new_Row['water_content']= new_Row['water_content'][0:-7]+water_content
-        new_Row['actual_transpiration']=new_Row['actual_transpiration'][0:-7]+actual_transpiration
+        new_Row['water_content']= new_Row['water_content'][0:-7]+ [round(x, 2) for x in water_content]
+        new_Row['actual_transpiration']=new_Row['actual_transpiration'][0:-7]+ [round(x, 2) for x in actual_transpiration]
         new_Row['InitialWaterContent_Num'] = water_storage
         new_Row['submit_time']=nowTime
 
