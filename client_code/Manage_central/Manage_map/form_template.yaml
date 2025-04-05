@@ -1,0 +1,18 @@
+components_by_slot:
+  navigation:
+  - layout_properties: {}
+    name: navigation_link_1
+    properties: {icon: 'mi:file_map', selected: true, text: 灌区地图}
+    type: form:dep_lin1x4oec0ytd:_Components.NavigationLink
+  - layout_properties: {}
+    name: navigation_link_2
+    properties: {icon: 'mi:browser_updated', navigate_to: Manage_central, selected: false, text: 信息汇总}
+    type: form:dep_lin1x4oec0ytd:_Components.NavigationLink
+  - layout_properties: {}
+    name: navigation_link_3
+    properties: {icon: 'mi:wifi_home', navigate_to: HomePage, text: 回到主页}
+    type: form:dep_lin1x4oec0ytd:_Components.NavigationLink
+is_package: true
+layout:
+  properties: {navigation_rail_vertical_align: center, show_sidesheet: false}
+  type: form:dep_lin1x4oec0ytd:Layouts.NavigationRailLayout

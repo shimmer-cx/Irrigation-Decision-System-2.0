@@ -12,6 +12,12 @@ class HomePage(HomePageTemplate):
     # Set Form properties and Data Bindings.
     self.init_components(**properties)
 
+    if anvil.users.get_user() is None:
+      self.button_1.visible=True
+      self.button_2.visible=False
+    else:
+      self.button_1.visible=False
+      self.button_2.visible=True
     # Any code you write here will run before the form opens.
 
 
@@ -24,13 +30,19 @@ class HomePage(HomePageTemplate):
     """This method is called when the mouse cursor leaves this component"""
     self.rich_text_2.content=""
 
-  def icon_button_1_click(self, **event_args):
+  def button_1_click(self, **event_args):
     user=anvil.users.login_with_form()
     if user is not None:
+      self.button_1.visible=False
+      self.button_2.visible=True
       Notification('登录成功！').show()
+      
+    
 
-  def icon_button_2_click(self, **event_args):
+  def button_2_click(self, **event_args):
     anvil.users.logout()
+    self.button_1.visible=True
+    self.button_2.visible=False
     Notification('退出登录成功！').show()
 
 

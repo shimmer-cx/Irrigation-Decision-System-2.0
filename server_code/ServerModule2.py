@@ -285,7 +285,7 @@ def RunModel(current_user):
         new_Row['water_content']=[round(x, 2) for x in water_content]
         new_Row['InitialWaterContent_Num']=water_storage
         # new_Row['submit_time']=nowTime
-        new_Row['date_list']= [str(date.strftime('%Y-%m-%d')) for date in pd.date_range(start=sim_startDate, periods=lenth-1, freq="D")]
+        new_Row['date_list']= [date.strftime('%Y-%m-%d') for date in pd.date_range(start=sim_startDate, periods=lenth-1, freq="D")]
         new_Row['is_firstRun'] = False
       else:
         
@@ -322,7 +322,7 @@ def RunModel(current_user):
         
         water_content =list(  water_flux['Wr'])
         actual_transpiration =list(  water_flux['Tr'])
-        datelist= [str(date.strftime('%Y-%m-%d')) for date in pd.date_range(start=sim_startDate, periods=7 ,freq="D")]
+        datelist= [date.strftime('%Y-%m-%d') for date in pd.date_range(start=sim_startDate, periods=7 ,freq="D")]
         new_Row['irrigation']=new_Row['irrigation'][0:-6]+irrigation
         new_Row['water_content']= new_Row['water_content'][0:-6]+ [round(x, 2) for x in water_content]
         new_Row['actual_transpiration']=new_Row['actual_transpiration'][0:-6]+ [round(x, 2) for x in actual_transpiration]
