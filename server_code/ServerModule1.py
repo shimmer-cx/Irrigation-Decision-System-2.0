@@ -4,7 +4,8 @@ import anvil.tables.query as q
 from anvil.tables import app_tables
 import anvil.server
 from datetime import datetime
-from pandas import DateOffset
+from zoneinfo import ZoneInfo
+
 
 @anvil.server.background_task
 def save_Zhikaikou_data(current_user,whatData,data):
@@ -12,8 +13,10 @@ def save_Zhikaikou_data(current_user,whatData,data):
     # current_user = anvil.users.get_user()#在后台任务中无法获得当前登录！！！！
     # Check that someone is logged in
     if current_user is not None:
+      # 定义北京时区
+      beijing_tz = ZoneInfo('Asia/Shanghai')
       # 获取北京时间
-      now_time = datetime.now()+DateOffset(hours=8)
+      now_time = datetime.now(beijing_tz).replace(tzinfo=None)
       
       user_row = (app_tables.zhikaikouuser_data.get(User=current_user)
                or app_tables.zhikaikouuser_data.add_row(User=current_user))

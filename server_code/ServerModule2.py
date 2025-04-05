@@ -7,8 +7,8 @@ import openmeteo_requests
 import requests_cache
 from retry_requests import retry
 
-from datetime import datetime
-# from zoneinfo import ZoneInfo
+from datetime import datetime,timedelta
+from zoneinfo import ZoneInfo
 from anvil.tables import app_tables
 from aquacrop import AquaCropModel, IrrigationManagement, InitialWaterContent, GroundWater,Crop,Soil 
 import copy
@@ -119,12 +119,14 @@ def Get_weather_data(simStartDate, location):
     Start_Date=datetime.strptime(simStartDate, "%Y/%m/%d")
     sim_Start_Date=Start_Date.strftime('%Y-%m-%d')
     Day=3#历史气象数据最晚到3天前的数据
+    # 定义北京时区
+    beijing_tz = ZoneInfo('Asia/Shanghai')
     # 获取北京时间
-    beijing_time = datetime.now()+pd.DateOffset(hours=8)
+    beijing_time = datetime.now(beijing_tz).replace(tzinfo=None)
   
-    if beijing_time-sim_Start_Date >= pd.DateOffset(days=Day):
+    if beijing_time-Start_Date >= timedelta(days=Day):
 
-      end_date =beijing_time-pd.DateOffset(days=Day)
+      end_date =beijing_time-timedelta(days=Day)
       end_date=end_date.strftime('%Y-%m-%d')
       #获取历史气象数据
       history_weather=GetHistoryWeather(location[0],location[1],sim_Start_Date,end_date)
@@ -215,10 +217,9 @@ def CustomGroundWater(waterTable):
     return groundWater
 
 
-@anvil.server.background_task
+@anvil.server.callable
 def RunModel(current_user):
      
-
     data = app_tables.zhikaikouuser_data.get(User=current_user)  
     if data is None or current_user is None:
       return  '新用户或从没有提交过模型数据的就不要执行以下模块'
@@ -231,16 +232,17 @@ def RunModel(current_user):
 
     soil=CustomSoil(soilParam)
     groundWater=CustomGroundWater(data['water_table'])
-
+    # 定义北京时区
+    beijing_tz = ZoneInfo('Asia/Shanghai')
     # 获取北京时间
-    beijing_time = datetime.now()+pd.DateOffset(hours=8)
-    nowDate=beijing_time.strftime('%Y-%m-%d')
+    beijing_time = datetime.now(beijing_tz).replace(tzinfo=None)
+    nowTime=beijing_time.strftime('%Y-%m-%d %H:%M:%S')
     N=7   #从现在开始向前运行 N 天，也即模拟结束时间为一周后结束
-    sim_endDate =beijing_time+ pd.DateOffset(days=N-1)
+    sim_endDate =beijing_time+ timedelta(days=N-1)
     sim_endDate=sim_endDate.strftime('%Y/%m/%d')
     #SMT | list[float] | 每个生长阶段要维持的土壤水分目标（%TAW）
     irr_mngt=IrrigationManagement(irrigation_method=1,SMT=smt)
-    weather_df=Get_weather_data(sim_startDate,location)#维度和经度
+
   
     for crop_param in crop_params:
       
@@ -252,6 +254,7 @@ def RunModel(current_user):
 
       if new_Row['is_firstRun'] is True:    #要区分是否为第一次模拟
         
+        weather_df=Get_weather_data(sim_startDate,location)#维度和经度
         initialWater=InitialWaterContent(value = ['SAT'])
         model = AquaCropModel(sim_start_time=sim_startDate,
                           sim_end_time=sim_endDate,
@@ -281,12 +284,13 @@ def RunModel(current_user):
         new_Row['irrigation']=irrigation
         new_Row['water_content']=water_content
         new_Row['InitialWaterContent_Num']=water_storage
-        new_Row['submit_time']=nowDate
+        new_Row['submit_time']=nowTime
         new_Row['is_firstRun'] = False
       else:
         
-        sim_startDate = beijing_time- pd.DateOffset(days=1)
+        sim_startDate = beijing_time- timedelta(days=1)
         sim_startDate= sim_startDate.strftime('%Y/%m/%d')
+        weather_df=Get_weather_data(sim_startDate,location)#维度和经度
         Num= new_Row['InitialWaterContent_Num']
         initialWater=InitialWaterContent(wc_type = 'Prop',
                                         method = 'Layer',
@@ -322,7 +326,7 @@ def RunModel(current_user):
         new_Row['water_content']= new_Row['water_content'][0:-7]+water_content
         new_Row['actual_transpiration']=new_Row['actual_transpiration'][0:-7]+actual_transpiration
         new_Row['InitialWaterContent_Num'] = water_storage
-        new_Row['submit_time']=nowDate
+        new_Row['submit_time']=nowTime
 
     return '计算完成'
 

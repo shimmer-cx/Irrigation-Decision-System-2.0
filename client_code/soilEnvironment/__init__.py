@@ -70,6 +70,7 @@ class soilEnvironment(soilEnvironmentTemplate):
     """This method is called when the form is removed from the page"""
     if self.checkbox_1.checked is False and self.dropdown_menu_1.selected_value is not None:
       anvil.server.call('launch_save_Zhikaikou_data','soil_infor',self.soil_infor)
+      # anvil.server.call('launch_save_Zhikaikou_data','water_table',[])
     elif self.checkbox_1.checked is True and self.repeating_panel_1.items is not None:
       anvil.server.call('launch_save_Zhikaikou_data','water_table',self.repeating_panel_1.items)
 
