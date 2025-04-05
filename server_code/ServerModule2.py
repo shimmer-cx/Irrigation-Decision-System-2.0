@@ -237,7 +237,7 @@ def RunModel(current_user):
     # 获取北京时间
     beijing_time = datetime.now(beijing_tz).replace(tzinfo=None)
     nowTime=beijing_time.strftime('%Y-%m-%d %H:%M:%S')
-    N=7   #从现在开始向前运行 N 天，也即模拟结束时间为一周后结束
+    N=7   #从现在开始向前运行 N 天，也即模拟结束时间为一周后结束,由于模型自身因素。只能计算到未来第6天
     sim_endDate =beijing_time+ timedelta(days=N-1)
     sim_endDate=sim_endDate.strftime('%Y/%m/%d')
     #SMT | list[float] | 每个生长阶段要维持的土壤水分目标（%TAW）
@@ -275,7 +275,7 @@ def RunModel(current_user):
           
         water_storage=model._outputs.water_storage         
         lenth=water_storage.shape[0]
-        water_storage=water_storage.iloc[lenth-8,3:15]#获取当日的土壤水分含量
+        water_storage=water_storage.iloc[lenth-7,3:15]#获取当日的土壤水分含量
         water_storage=list(water_storage)
         water_content =list(  water_flux['Wr'])#'Wr作物根区水分'
         actual_transpiration =list(  water_flux['Tr'])#作物蒸腾量（mm）。
@@ -313,7 +313,7 @@ def RunModel(current_user):
       
         irrigation =list( water_flux['IrrDay'])
         for i in range(0, len(irrigation)):
-          irrigation[i]=irrigation[i]*area*0.6666667         #亩的单位要换算
+          irrigation[i]=round(irrigation[i]*area*0.6666667, 2)        #亩的单位要换算
           
         water_storage=model._outputs.water_storage         
         water_storage=water_storage.iloc[1,3:15]#获取当日的土壤水分含量,1：留下今天的Num
@@ -322,9 +322,9 @@ def RunModel(current_user):
         water_content =list(  water_flux['Wr'])
         actual_transpiration =list(  water_flux['Tr'])
 
-        new_Row['irrigation']=new_Row['irrigation'][0:-7]+irrigation
-        new_Row['water_content']= new_Row['water_content'][0:-7]+ [round(x, 2) for x in water_content]
-        new_Row['actual_transpiration']=new_Row['actual_transpiration'][0:-7]+ [round(x, 2) for x in actual_transpiration]
+        new_Row['irrigation']=new_Row['irrigation'][0:-6]+irrigation
+        new_Row['water_content']= new_Row['water_content'][0:-6]+ [round(x, 2) for x in water_content]
+        new_Row['actual_transpiration']=new_Row['actual_transpiration'][0:-6]+ [round(x, 2) for x in actual_transpiration]
         new_Row['InitialWaterContent_Num'] = water_storage
         new_Row['submit_time']=nowTime
 
