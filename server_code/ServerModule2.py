@@ -118,25 +118,25 @@ def Get_weather_data(simStartDate, location):
     
     Start_Date=datetime.strptime(simStartDate, "%Y/%m/%d")
     sim_Start_Date=Start_Date.strftime('%Y-%m-%d')
-    Day=3#历史气象数据最晚到3天前的数据
+    # day=3#历史气象数据最晚到3天前的数据
     # 定义北京时区
     beijing_tz = ZoneInfo('Asia/Shanghai')
     # 获取北京时间
     beijing_time = datetime.now(beijing_tz).replace(tzinfo=None)
-  
-    if beijing_time-Start_Date >= timedelta(days=Day):
+    d=(beijing_time-Start_Date)/ timedelta(days=1)
+    if d >= 3:
 
-      end_date =beijing_time-timedelta(days=Day)
+      end_date =beijing_time-timedelta(days=3)
       end_date=end_date.strftime('%Y-%m-%d')
       #获取历史气象数据
       history_weather=GetHistoryWeather(location[0],location[1],sim_Start_Date,end_date)
-      #获取预测气象数据
-      forecast_weather=GetForecastWeather(location[0],location[1],Day-1)
+      #获取预测气象数据(里面包含了2天的历史数据)
+      forecast_weather=GetForecastWeather(location[0],location[1],2)
       return pd.concat([history_weather,forecast_weather])
     else:
 
-      #获取预测气象数据(里面包含了2天的历史数据)
-      forecast_weather=GetForecastWeather(location[0],location[1],Day-1)
+      #获取预测气象数据(里面包含了1天的历史数据)
+      forecast_weather=GetForecastWeather(location[0],location[1],1)
       return forecast_weather
       
    
