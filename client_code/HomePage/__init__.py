@@ -62,6 +62,12 @@ class HomePage(HomePageTemplate):
       Notification('请先登录再尝试！').show()
     else:
       open_form('irrigationPage')
+
+  def button_3_click(self, **event_args):
+    """This method is called when the component is clicked."""
+    user=anvil.users.get_user()
+    infor=anvil.server.call('RunModel',user)
+    Notification(infor).show()
     
 
 

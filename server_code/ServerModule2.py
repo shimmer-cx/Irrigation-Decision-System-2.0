@@ -271,11 +271,11 @@ def RunModel(current_user):
         water_flux=water_flux.iloc[:-1]
         irrigation =list( water_flux['IrrDay'])
         for i in range(0, len(irrigation)):
-          irrigation[i]=round(irrigation[i]*area*0.6666667, 2)      #亩的单位要换算
+          irrigation[i]=round(irrigation[i]*area*0.6666667,2)      #亩的单位要换算
           
-        water_storage=model._outputs.water_storage         
-        lenth=water_storage.shape[0]
-        water_storage=water_storage.iloc[lenth-7,3:15]#获取当日的土壤水分含量
+        water_storage=model._outputs.water_storage
+        water_storage=water_storage[water_storage['growing_season']==1]
+        water_storage=water_storage.iloc[0,3:15]#获取种植当日的土壤水分含量
         water_storage=list(water_storage)
         water_content =list(  water_flux['Wr'])#'Wr作物根区水分'
         actual_transpiration =list(  water_flux['Tr'])#作物蒸腾量（mm）。
@@ -283,16 +283,15 @@ def RunModel(current_user):
         new_Row['actual_transpiration']=[round(x, 2) for x in actual_transpiration]
         new_Row['irrigation']=irrigation
         new_Row['water_content']=[round(x, 2) for x in water_content]
-        new_Row['InitialWaterContent_Num']=water_storage
+        new_Row['InitialWaterContent_PlantNum']=water_storage
         # new_Row['submit_time']=nowTime
-        new_Row['date_list']= [date.strftime('%Y-%m-%d') for date in pd.date_range(start=sim_startDate, periods=lenth-1, freq="D")]
+        new_Row['date_list']= [date.strftime('%Y-%m-%d') for date in pd.date_range(start=sim_startDate, periods=len(irrigation), freq="D")]
         new_Row['is_firstRun'] = False
       else:
         
-        sim_startDate = beijing_time- timedelta(days=1)
-        sim_startDate= sim_startDate.strftime('%Y/%m/%d')
+        sim_startDate =beijing_time.strftime('%Y/')+crop.planting_date#模型只能最晚从种植日开始模拟 
         weather_df=Get_weather_data(sim_startDate,location)#维度和经度
-        Num= new_Row['InitialWaterContent_Num']
+        Num= new_Row['InitialWaterContent_PlantNum']
         initialWater=InitialWaterContent(wc_type = 'Num',
                                         method = 'Layer',
                                         depth_layer= [1,2,3,4,5,6,7,8,9,10,11,12],
@@ -316,18 +315,17 @@ def RunModel(current_user):
         for i in range(0, len(irrigation)):
           irrigation[i]=round(irrigation[i]*area*0.6666667, 2)        #亩的单位要换算
           
-        water_storage=model._outputs.water_storage         
-        water_storage=water_storage.iloc[1,3:15]#获取当日的土壤水分含量,1：留下今天的Num
-        water_storage=list(water_storage)
+        # water_storage=model._outputs.water_storage         
+        # water_storage=water_storage.iloc[1,3:15]#获取当日的土壤水分含量,1：留下今天的Num
+        # water_storage=list(water_storage)
         
         water_content =list(  water_flux['Wr'])
         actual_transpiration =list(  water_flux['Tr'])
-        datelist= [date.strftime('%Y-%m-%d') for date in pd.date_range(start=sim_startDate, periods=7 ,freq="D")]
-        new_Row['irrigation']=new_Row['irrigation'][0:-6]+irrigation
-        new_Row['water_content']= new_Row['water_content'][0:-6]+ [round(x, 2) for x in water_content]
-        new_Row['actual_transpiration']=new_Row['actual_transpiration'][0:-6]+ [round(x, 2) for x in actual_transpiration]
-        new_Row['InitialWaterContent_Num'] = water_storage
-        new_Row['date_list']= new_Row['date_list'][0:-6] + datelist
+        datelist= [date.strftime('%Y-%m-%d') for date in pd.date_range(start=sim_startDate, periods=len(irrigation),freq="D")]
+        new_Row['irrigation']=new_Row['irrigation'][0:-6]+irrigation[-7:]
+        new_Row['water_content']= new_Row['water_content'][0:-6]+ [round(x, 2) for x in water_content][-7:]
+        new_Row['actual_transpiration']=new_Row['actual_transpiration'][0:-6]+ [round(x, 2) for x in actual_transpiration][-7:]
+        new_Row['date_list']= new_Row['date_list'][0:-6] + datelist[-7:]
         # new_Row['submit_time']=nowTime
 
     return '计算完成'

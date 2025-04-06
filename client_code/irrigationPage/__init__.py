@@ -22,11 +22,7 @@ class irrigationPage(irrigationPageTemplate):
     """This method is called when the component is clicked"""
     open_form('irrigationPage.irrigationHistory')
 
-  def button_1_click(self, **event_args):
-    """This method is called when the component is clicked."""
-    user=anvil.users.get_user()
-    infor=anvil.server.call('RunModel',user)
-    Notification(infor).show()
+ 
 
   def form_show(self, **event_args):
     """This method is called when the form is shown on the page"""
