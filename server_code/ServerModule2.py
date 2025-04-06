@@ -298,7 +298,7 @@ def RunModel(current_user):
                                         depth_layer= [1,2,3,4,5,6,7,8,9,10,11,12],
                                         value = Num )#要将土壤初始含水量设置到上次计算出来的结果，暂未修改
       
-        model = AquaCropModel(sim_start_time=sim_startDate,
+        model = AquaCropModel(sim_start_time=sim_startDate,#遇到一个问题模型只能最晚从种植日开始 
                           sim_end_time=sim_endDate,
                           weather_df=weather_df,
                           soil=soil,
