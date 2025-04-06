@@ -123,7 +123,7 @@ def Get_weather_data(simStartDate, location):
     beijing_tz = ZoneInfo('Asia/Shanghai')
     # 获取北京时间
     beijing_time = datetime.now(beijing_tz).replace(tzinfo=None)
-    d=(beijing_time-Start_Date)/ timedelta(days=1)
+    d=int((beijing_time-Start_Date)/ timedelta(days=1))
     if d >= 3:
 
       end_date =beijing_time-timedelta(days=3)

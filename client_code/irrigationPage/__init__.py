@@ -2,12 +2,14 @@ from ._anvil_designer import irrigationPageTemplate
 from anvil import *
 import anvil.server
 import anvil.users
-import anvil.tables as tables
-import anvil.tables.query as q
-from anvil.tables import app_tables
+from ..irrigationPage.irrigationHistory import irrigationHistory
 
 
 class irrigationPage(irrigationPageTemplate):
+
+  # irri_history=[]
+  # date_history=[]
+
   def __init__(self, **properties):
     self.item=anvil.server.call('get_irrigation_info')
     # Set Form properties and Data Bindings.
@@ -31,16 +33,19 @@ class irrigationPage(irrigationPageTemplate):
     if len(self.item)==1:
       self.button_5.visible=False
       self.button_4.visible=False
-      data=self.item[0]
+      data=self.item[0]  
       self.heading_2.text=data['crop_name']
+      irrigationHistory.cropName=data['crop_name']#
       irrigation=data['irrigation']
       date_list=data['date_list']
       irrigation.reverse()#反向列表
       date_list.reverse()#反向列表
-      irri_history=irrigation[7:]
-      date_history=date_list[7:]
-      irri_future= irrigation[0:7]
-      date_future= date_list[0:7]
+      irri_history=irrigation[6:]
+      date_history=date_list[6:]
+      irrigationHistory.irri_history=irri_history#
+      irrigationHistory.date_history=date_history#
+      irri_future= irrigation[0:6]
+      date_future= date_list[0:6]
       irri_future.reverse()#再反回来列表
       date_future.reverse()#再反回来列表
       for irri,date in zip(irri_history,date_history):
