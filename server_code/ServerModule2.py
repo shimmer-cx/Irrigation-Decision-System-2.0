@@ -236,7 +236,7 @@ def RunModel(current_user):
     beijing_tz = ZoneInfo('Asia/Shanghai')
     # 获取北京时间
     beijing_time = datetime.now(beijing_tz).replace(tzinfo=None)
-    nowTime=beijing_time.strftime('%Y-%m-%d %H:%M:%S')
+    # nowTime=beijing_time.strftime('%Y-%m-%d %H:%M:%S')
     N=7   #从现在开始向前运行 N 天，也即模拟结束时间为一周后结束,由于模型自身因素。只能计算到未来第6天
     sim_endDate =beijing_time+ timedelta(days=N-1)
     sim_endDate=sim_endDate.strftime('%Y/%m/%d')
