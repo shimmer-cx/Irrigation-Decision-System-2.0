@@ -293,7 +293,7 @@ def RunModel(current_user):
         sim_startDate= sim_startDate.strftime('%Y/%m/%d')
         weather_df=Get_weather_data(sim_startDate,location)#维度和经度
         Num= new_Row['InitialWaterContent_Num']
-        initialWater=InitialWaterContent(wc_type = 'Prop',
+        initialWater=InitialWaterContent(wc_type = 'Num',
                                         method = 'Layer',
                                         depth_layer= [1,2,3,4,5,6,7,8,9,10,11,12],
                                         value = Num )#要将土壤初始含水量设置到上次计算出来的结果，暂未修改
