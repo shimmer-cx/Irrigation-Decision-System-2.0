@@ -2,7 +2,7 @@ components_by_slot:
   content:
   - layout_properties: {}
     name: heading_1
-    properties: {icon: 'mi:add_notes', text: 灌区基本信息}
+    properties: {icon: 'mi:add_notes', text: 系统模拟所需的基本信息}
     type: form:dep_lin1x4oec0ytd:_Components.Heading
   - components:
     - data_bindings: []
@@ -61,7 +61,7 @@ components_by_slot:
   navigation:
   - layout_properties: {}
     name: navigation_link_1
-    properties: {icon: 'mi:add_notes', selected: true, text: 灌区基本信息}
+    properties: {icon: 'mi:add_notes', selected: true, text: 系统基本信息}
     type: form:dep_lin1x4oec0ytd:_Components.NavigationLink
   - event_bindings: {click: navigation_link_2_click}
     layout_properties: {}
