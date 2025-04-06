@@ -2,7 +2,7 @@ components_by_slot:
   content:
   - layout_properties: {}
     name: heading_1
-    properties: {icon: 'mi:add_notes', text: 系统模拟所需的基本信息}
+    properties: {icon: 'mi:add_notes', text: 系统开始模拟的基本信息}
     type: form:dep_lin1x4oec0ytd:_Components.Heading
   - components:
     - data_bindings: []
