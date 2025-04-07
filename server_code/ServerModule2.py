@@ -217,7 +217,7 @@ def CustomGroundWater(waterTable):
     return groundWater
 
 
-@anvil.server.callable
+@anvil.server.background_task
 def RunModel(current_user):
      
     data = app_tables.zhikaikouuser_data.get(User=current_user)  
@@ -236,27 +236,26 @@ def RunModel(current_user):
     beijing_tz = ZoneInfo('Asia/Shanghai')
     # 获取北京时间
     beijing_time = datetime.now(beijing_tz).replace(tzinfo=None)
-    # nowTime=beijing_time.strftime('%Y-%m-%d %H:%M:%S')
+    nowTime=beijing_time.strftime('%Y-%m-%d %H:%M:%S')
     N=7   #从现在开始向前运行 N 天，也即模拟结束时间为一周后结束,由于模型自身因素。只能计算到未来第6天
     sim_endDate =beijing_time+ timedelta(days=N-1)
     sim_endDate=sim_endDate.strftime('%Y/%m/%d')
     #SMT | list[float] | 每个生长阶段要维持的土壤水分目标（%TAW）
     irr_mngt=IrrigationManagement(irrigation_method=1,SMT=smt)
 
-  
     for crop_param in crop_params:
       
       new_Row=(app_tables.irrigation_decisions.get(crop_name=crop_param['cropName'],User=current_user)
-               or app_tables.irrigation_decisions.add_row(crop_name=crop_param['cropName'],is_firstRun=True,User=current_user))
+               or app_tables.irrigation_decisions.add_row(crop_name=crop_param['cropName'],User=current_user))
       
       crop=CustomCrop(crop_param)
       area =data['irrigationArea_infor'][3]*(crop_param["areaRatio"]/100)
 
-      if new_Row['is_firstRun'] is True:    #要区分是否为第一次模拟
+      # if new_Row['is_firstRun'] is True:    #要区分是否为第一次模拟
         
-        weather_df=Get_weather_data(sim_startDate,location)#维度和经度
-        initialWater=InitialWaterContent(value = ['SAT'])
-        model = AquaCropModel(sim_start_time=sim_startDate,
+      weather_df=Get_weather_data(sim_startDate,location)#维度和经度
+      initialWater=InitialWaterContent(value = ['SAT'])
+      model = AquaCropModel(sim_start_time=sim_startDate,
                           sim_end_time=sim_endDate,
                           weather_df=weather_df,
                           soil=soil,
@@ -264,69 +263,75 @@ def RunModel(current_user):
                           initial_water_content=initialWater,
                           irrigation_management=irr_mngt,
                           groundwater=groundWater) # create model
-        model.run_model(till_termination=True)#Run
+      model.run_model(till_termination=True)#Run
       
-        water_flux=model._outputs.water_flux
-        #water_flux=water_flux[ water_flux['season_counter'] ==0]#使用布尔表达式：根据条件过滤 DataFrame
-        water_flux=water_flux.iloc[:-1]
-        irrigation =list( water_flux['IrrDay'])
-        for i in range(0, len(irrigation)):
-          irrigation[i]=round(irrigation[i]*area*0.6666667,2)      #亩的单位要换算
+      water_flux=model._outputs.water_flux
+      #water_flux=water_flux[ water_flux['season_counter'] ==0]#使用布尔表达式：根据条件过滤 DataFrame
+      water_flux=water_flux.iloc[:-1]#删除最后一行0行
+      irrigation =list( water_flux['IrrDay'])
+      for i in range(0, len(irrigation)):
+        irrigation[i]=round(irrigation[i]*area*0.6666667,2)      #亩的单位要换算
           
-        water_storage=model._outputs.water_storage
-        water_storage=water_storage[water_storage['growing_season']==1]
-        water_storage=water_storage.iloc[0,3:15]#获取种植当日的土壤水分含量
-        water_storage=list(water_storage)
-        water_content =list(  water_flux['Wr'])#'Wr作物根区水分'
-        actual_transpiration =list(  water_flux['Tr'])#作物蒸腾量（mm）。
+      # water_storage=model._outputs.water_storage
+      # water_storage=water_storage[water_storage['growing_season']==1]
+      # water_storage=water_storage.iloc[0,3:15]#获取种植当日的土壤水分含量
+      # water_storage=list(water_storage)
+      water_content =list(  water_flux['Wr'])#'Wr作物根区水分'
+      actual_transpiration =list(  water_flux['Tr'])#作物蒸腾量（mm）。
 
-        new_Row['actual_transpiration']=[round(x, 2) for x in actual_transpiration]
-        new_Row['irrigation']=irrigation
-        new_Row['water_content']=[round(x, 2) for x in water_content]
-        new_Row['InitialWaterContent_PlantNum']=water_storage
-        # new_Row['submit_time']=nowTime
-        new_Row['date_list']= [date.strftime('%Y-%m-%d') for date in pd.date_range(start=sim_startDate, periods=len(irrigation), freq="D")]
-        new_Row['is_firstRun'] = False
-      else:
+      new_Row['actual_transpiration']=[round(x, 2) for x in actual_transpiration]
+      new_Row['irrigation']=irrigation
+      new_Row['water_content']=[round(x, 2) for x in water_content]
+      # new_Row['InitialWaterContent_PlantNum']=water_storage
+      new_Row['submit_time']=nowTime
+      new_Row['date_list']= [date.strftime('%Y-%m-%d') for date in pd.date_range(start=sim_startDate, periods=len(irrigation), freq="D")]
+      # new_Row['is_firstRun'] = False
+      # else:
         
-        sim_startDate =beijing_time.strftime('%Y/')+crop.planting_date#模型只能最晚从种植日开始模拟 
-        weather_df=Get_weather_data(sim_startDate,location)#维度和经度
-        Num= new_Row['InitialWaterContent_PlantNum']
-        initialWater=InitialWaterContent(wc_type = 'Num',
-                                        method = 'Layer',
-                                        depth_layer= [1,2,3,4,5,6,7,8,9,10,11,12],
-                                        value = Num )#要将土壤初始含水量设置到上次计算出来的结果，暂未修改
+      #   sim_startDate =beijing_time.strftime('%Y/')+crop.planting_date#模型只能最晚从种植日开始模拟 
+      #   weather_df=Get_weather_data(sim_startDate,location)#维度和经度
+      #   Num= new_Row['InitialWaterContent_PlantNum']
+      #   initialWater=InitialWaterContent(wc_type = 'Num',
+      #                                   method = 'Layer',
+      #                                   depth_layer= [1,2,3,4,5,6,7,8,9,10,11,12],
+      #                                   value = Num )#要将土壤初始含水量设置到上次计算出来的结果，暂未修改
       
-        model = AquaCropModel(sim_start_time=sim_startDate,#遇到一个问题模型只能最晚从种植日开始 
-                          sim_end_time=sim_endDate,
-                          weather_df=weather_df,
-                          soil=soil,
-                          crop=crop,
-                          initial_water_content=initialWater,
-                          irrigation_management=irr_mngt,
-                          groundwater=groundWater) # create model
-        model.run_model(till_termination=True)#Run
+      #   model = AquaCropModel(sim_start_time=sim_startDate,#遇到一个问题模型只能最晚从种植日开始 
+      #                     sim_end_time=sim_endDate,
+      #                     weather_df=weather_df,
+      #                     soil=soil,
+      #                     crop=crop,
+      #                     initial_water_content=initialWater,
+      #                     irrigation_management=irr_mngt,
+      #                     groundwater=groundWater) # create model
+      #   model.run_model(till_termination=True)#Run
       
-        water_flux=model._outputs.water_flux
-        #water_flux=water_flux[ water_flux['season_counter'] ==0]#使用布尔表达式：根据条件过滤 DataFrame
-        water_flux=water_flux.iloc[:-1]#删除最后一行0行
+      #   water_flux=model._outputs.water_flux
+      #   #water_flux=water_flux[ water_flux['season_counter'] ==0]#使用布尔表达式：根据条件过滤 DataFrame
+      #   water_flux=water_flux.iloc[:-1]#删除最后一行0行
       
-        irrigation =list( water_flux['IrrDay'])
-        for i in range(0, len(irrigation)):
-          irrigation[i]=round(irrigation[i]*area*0.6666667, 2)        #亩的单位要换算
+      #   irrigation =list( water_flux['IrrDay'])
+      #   for i in range(0, len(irrigation)):
+      #     irrigation[i]=round(irrigation[i]*area*0.6666667, 2)        #亩的单位要换算
           
-        # water_storage=model._outputs.water_storage         
-        # water_storage=water_storage.iloc[1,3:15]#获取当日的土壤水分含量,1：留下今天的Num
-        # water_storage=list(water_storage)
+      #   # water_storage=model._outputs.water_storage         
+      #   # water_storage=water_storage.iloc[1,3:15]#获取当日的土壤水分含量,1：留下今天的Num
+      #   # water_storage=list(water_storage)
         
-        water_content =list(  water_flux['Wr'])
-        actual_transpiration =list(  water_flux['Tr'])
-        datelist= [date.strftime('%Y-%m-%d') for date in pd.date_range(start=sim_startDate, periods=len(irrigation),freq="D")]
-        new_Row['irrigation']=new_Row['irrigation'][0:-6]+irrigation[-7:]
-        new_Row['water_content']= new_Row['water_content'][0:-6]+ [round(x, 2) for x in water_content][-7:]
-        new_Row['actual_transpiration']=new_Row['actual_transpiration'][0:-6]+ [round(x, 2) for x in actual_transpiration][-7:]
-        new_Row['date_list']= new_Row['date_list'][0:-6] + datelist[-7:]
-        # new_Row['submit_time']=nowTime
+      #   water_content =list(  water_flux['Wr'])
+      #   actual_transpiration =list(  water_flux['Tr'])
+      #   datelist= [date.strftime('%Y-%m-%d') for date in pd.date_range(start=(beijing_time-timedelta(days=1)).strftime('%Y-%m-%d'), periods=7,freq="D")]
+      #   new_Row['irrigation']=new_Row['irrigation'][0:-6]+irrigation[-7:]
+      #   new_Row['water_content']= new_Row['water_content'][0:-6]+ [round(x, 2) for x in water_content][-7:]
+      #   new_Row['actual_transpiration']=new_Row['actual_transpiration'][0:-6]+ [round(x, 2) for x in actual_transpiration][-7:]
+      #   new_Row['date_list']= new_Row['date_list'][0:-6] + datelist
+      #   # new_Row['submit_time']=nowTime
 
     return '计算完成'
 
+@anvil.server.callable
+@anvil.tables.in_transaction
+def background_task_RunModel():
+  user=anvil.users.get_user()
+  infor_run=anvil.server.launch_background_task('RunModel',user)
+  return infor_run

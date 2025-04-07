@@ -29,15 +29,12 @@ db_schema:
     - admin_ui: {order: 6, width: 200}
       name: actual_transpiration
       type: simpleObject
-    - admin_ui: {order: 7, width: 200}
-      name: InitialWaterContent_PlantNum
-      type: simpleObject
-    - admin_ui: {order: 8, width: 200}
-      name: is_firstRun
-      type: bool
     - admin_ui: {order: 9, width: 200}
       name: date_list
       type: simpleObject
+    - admin_ui: {order: 0.75, width: 200}
+      name: submit_time
+      type: string
     server: full
     title: Irrigation_decisions
   users:

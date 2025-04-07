@@ -65,8 +65,8 @@ class HomePage(HomePageTemplate):
 
   def button_3_click(self, **event_args):
     """This method is called when the component is clicked."""
-    user=anvil.users.get_user()
-    infor=anvil.server.call('RunModel',user)
+   
+    infor=anvil.server.call('background_task_RunModel')
     Notification(infor).show()
     
 
