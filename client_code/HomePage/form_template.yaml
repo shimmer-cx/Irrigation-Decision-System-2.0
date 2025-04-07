@@ -40,7 +40,7 @@ components_by_slot:
   - components:
     - layout_properties: {slot: anvil-m3-buttonMenu-slot}
       name: navigation_link_4
-      properties: {icon: 'mi:file_map', navigate_to: Manage_central.Manage_map, text: 灌区地图}
+      properties: {icon: 'mi:file_map', navigate_to: Manage_map, text: 灌区地图}
       type: form:dep_lin1x4oec0ytd:_Components.NavigationLink
     - layout_properties: {slot: anvil-m3-buttonMenu-slot}
       name: navigation_link_5

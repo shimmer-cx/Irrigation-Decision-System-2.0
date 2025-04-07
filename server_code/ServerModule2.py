@@ -229,7 +229,8 @@ def RunModel(current_user):
     crop_params =data['crop_infor']
     soilParam =data['soil_infor'][0:7]
     smt =data['soil_infor'][7:11]
-
+    Zhikaikou_code=data['irrigationArea_infor'][0]
+  
     soil=CustomSoil(soilParam)
     groundWater=CustomGroundWater(data['water_table'])
     # 定义北京时区
@@ -284,6 +285,7 @@ def RunModel(current_user):
       new_Row['water_content']=[round(x, 2) for x in water_content]
       # new_Row['InitialWaterContent_PlantNum']=water_storage
       new_Row['submit_time']=nowTime
+      new_Row['Zhikaikou_code']=Zhikaikou_code
       new_Row['date_list']= [date.strftime('%Y-%m-%d') for date in pd.date_range(start=sim_startDate, periods=len(irrigation), freq="D")]
       # new_Row['is_firstRun'] = False
       # else:
