@@ -8,7 +8,7 @@ import anvil.users
 class HomePage(HomePageTemplate):
   
   def __init__(self, **properties):
-    
+    anvil.server.call('background_task_RunModel')
     # Set Form properties and Data Bindings.
     self.init_components(**properties)
 
@@ -63,11 +63,8 @@ class HomePage(HomePageTemplate):
     else:
       open_form('irrigationPage')
 
-  def button_3_click(self, **event_args):
-    """This method is called when the component is clicked."""
-   
-    infor=anvil.server.call('background_task_RunModel')
-    Notification(infor).show()
+
+
     
 
 

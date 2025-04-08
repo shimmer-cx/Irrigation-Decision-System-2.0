@@ -32,11 +32,6 @@ components_by_slot:
     name: button_menu_1
     properties: {align: full, appearance: elevated, enabled: true, icon: 'mi:account_child_invert', icon_position: left, icon_size: null, text: 直开口管理人员入口, visible: true}
     type: form:dep_lin1x4oec0ytd:_Components.ButtonMenu
-  - event_bindings: {click: button_3_click}
-    layout_properties: {}
-    name: button_3
-    properties: {align: center, text: test}
-    type: form:dep_lin1x4oec0ytd:_Components.Button
   - components:
     - layout_properties: {slot: anvil-m3-buttonMenu-slot}
       name: navigation_link_4

@@ -57,7 +57,7 @@ class irrigationPage(irrigationPageTemplate):
       Tr=data['actual_transpiration']
       self.text_5.text=str(Tr[-7])+'mm(昨日)'
       Tr.reverse()#反向列表
-      self.text_4.text=str(sum(Tr[0:7]))+'mm(未来6日合)'
+      self.text_4.text=str(round(sum(Tr[0:7]),2))+'mm(未来6日合)'
       Wr=data['water_content']
       self.text_6.text=str(Wr[-6])+'mm(今天)'
       Wr.reverse()#反向列表
