@@ -61,22 +61,22 @@ components_by_slot:
     - event_bindings: {change: text_box_9_change}
       layout_properties: {grid_position: 'HXOWGN,BJYQVS RVQJPL,SMRKPA'}
       name: text_box_9
-      properties: {align: center, appearance: outlined, label: 发芽期（播种出苗期）​, type: number}
+      properties: {align: center, appearance: outlined, label: 出苗期（幼苗阶段）, type: number}
       type: form:dep_lin1x4oec0ytd:_Components.TextInput.TextBox
     - event_bindings: {change: text_box_11_change}
       layout_properties: {grid_position: 'HXOWGN,BJYQVS ARXOFW,QXISBI'}
       name: text_box_11
-      properties: {align: center, appearance: outlined, label: 营养生长期（茎叶快速生长期）​, type: number}
+      properties: {align: center, appearance: outlined, label: 最大冠层期（​生殖生长期初期/开花期​/封垄期​）, type: number}
       type: form:dep_lin1x4oec0ytd:_Components.TextInput.TextBox
     - event_bindings: {change: text_box_10_change}
       layout_properties: {grid_position: 'HXOWGN,AGTNDV OLVYCJ,JYBJGA'}
       name: text_box_10
-      properties: {align: center, appearance: outlined, label: 幼苗期（营养生长初期）​, type: number}
+      properties: {align: center, appearance: outlined, label: 冠层生长期（​营养生长期​/分蘖期​/分枝展叶期​）, type: number}
       type: form:dep_lin1x4oec0ytd:_Components.TextInput.TextBox
     - event_bindings: {change: text_box_12_change}
       layout_properties: {grid_position: 'HXOWGN,AGTNDV HLYGCQ,GMBSBX'}
       name: text_box_12
-      properties: {align: center, appearance: outlined, label: 生殖生长期（开花至成熟期）​, type: number}
+      properties: {align: center, appearance: outlined, label: 衰老期（成熟期​/灌浆期​/落叶期​/生理成熟期​）, type: number}
       type: form:dep_lin1x4oec0ytd:_Components.TextInput.TextBox
     - layout_properties: {grid_position: 'SLXETE,KZQAIG'}
       name: spacer_1
