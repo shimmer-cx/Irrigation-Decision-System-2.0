@@ -221,8 +221,8 @@ def CustomGroundWater(waterTable):
 def RunModel(current_user):
      
     data = app_tables.zhikaikouuser_data.get(User=current_user)  
-    if data is None or current_user is None:
-      return  '新用户或从没有提交过模型数据的就不要执行以下模块'
+    if data is None or current_user is None or current_user['is_manager'] is True:
+      return  '新用户或从没有提交过模型数据的就不要执行以下模块/管理员账户也不用执行'
     
     sim_startDate = data['irrigationArea_infor'][-1]
     location = data['irrigationArea_infor'][1:3]
