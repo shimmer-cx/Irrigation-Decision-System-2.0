@@ -9,6 +9,7 @@ from anvil.tables import app_tables
 
 class Manage_central(Manage_centralTemplate):
   def __init__(self, **properties):
+    self.item={'Zhikaikou_code':[],'crop_name':[],'lastIrrigationDate':[],'lastIrrigationVolume':[],'nextIrrigationDate':[],'naxtIrrigationVolume':[]}
     # Set Form properties and Data Bindings.
     self.init_components(**properties)
 

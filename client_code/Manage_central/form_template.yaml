@@ -18,8 +18,11 @@ components_by_slot:
       columns:
       - {data_key: Zhikaikou_code, id: VKTLBD, title: 直开口编号}
       - {data_key: crop_name, id: MPMOVG, title: 作物}
-      - {data_key: column_3, id: MGVKZA, title: 灌溉日期}
-      - {data_key: column_1, id: BOXEQO, title: 灌溉量}
+      - {data_key: lastIrrigationDate, id: MGVKZA, title: 上一次灌溉日期}
+      - {data_key: lastIrrigationVolume, id: BOXEQO, title: 上一次灌溉量}
+      - {data_key: nextIrrigationDate, id: MRQTEH, title: 下次灌溉日期}
+      - {data_key: nextIrrigationVolume, id: TNVOCK, title: 下次灌溉量}
+      - {data_key: column_1, id: OZOTHM, title: 查看详细灌溉规划}
     type: DataGrid
   - layout_properties: {}
     name: column_panel_1
