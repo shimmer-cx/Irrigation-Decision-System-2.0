@@ -22,7 +22,8 @@ class irrigationPage(irrigationPageTemplate):
     """This method is called when the component is clicked"""
     open_form('irrigationPage.irrigationHistory')
 
- 
+  # def toIrriInfo(data):
+    
 
   def form_show(self, **event_args):
     """This method is called when the form is shown on the page"""
@@ -60,7 +61,6 @@ class irrigationPage(irrigationPageTemplate):
       self.text_4.text=str(round(sum(Tr[0:7]),2))+'mm(未来6日合)'
       Wr=data['water_content']
       self.text_6.text=str(Wr[-6])+'mm(今天)'
-      Wr.reverse()#反向列表
       self.text_6_copy.text=str(Wr[-5])+'mm(明天)'
     else:
       self.button_5.visible=True
