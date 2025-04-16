@@ -35,7 +35,11 @@ def get_irrigation_info():
     current_user = anvil.users.get_user()
     if current_user is not None:
       return app_tables.irrigation_decisions.search(User=current_user)
-  
+      
+@anvil.server.callable
+@anvil.tables.in_transaction
+def getAllUsersIrriInfo():
+    return app_tables.irrigation_decisions.search()
 # This is a server module. It runs on the Anvil server,
 # rather than in the user's browser.
 #

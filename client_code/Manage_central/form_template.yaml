@@ -16,12 +16,13 @@ components_by_slot:
     name: data_grid_1
     properties:
       columns:
-      - {data_key: Zhikaikou_code, id: VKTLBD, title: 直开口编号}
-      - {data_key: crop_name, id: MPMOVG, title: 作物}
+      - {data_key: Zhikaikou_code, expand: false, id: VKTLBD, title: 直开口编号, width: 133.375}
+      - {data_key: crop_name, expand: false, id: MPMOVG, title: 作物, width: 139.75}
       - {data_key: lastIrrigationDate, id: MGVKZA, title: 上一次灌溉日期}
-      - {data_key: lastIrrigationVolume, id: BOXEQO, title: 上一次灌溉量}
+      - {data_key: lastIrrigationVolume, id: BOXEQO, title: 上一次灌溉量(m3)}
+      - {data_key: totallVolum, id: KTMGCK, title: 历史总灌溉量}
       - {data_key: nextIrrigationDate, id: MRQTEH, title: 下次灌溉日期}
-      - {data_key: nextIrrigationVolume, id: TNVOCK, title: 下次灌溉量}
+      - {data_key: naxtIrrigationVolume, expand: false, id: TNVOCK, title: 下次灌溉量(m3), width: 178.375}
       - {data_key: column_1, id: OZOTHM, title: 查看详细灌溉规划}
     type: DataGrid
   - layout_properties: {}
@@ -47,5 +48,6 @@ components_by_slot:
     type: form:dep_lin1x4oec0ytd:_Components.NavigationLink
 is_package: true
 layout:
+  form_event_bindings: {show: form_show}
   properties: {navigation_rail_vertical_align: center, show_sidesheet: false}
   type: form:dep_lin1x4oec0ytd:Layouts.NavigationRailLayout
