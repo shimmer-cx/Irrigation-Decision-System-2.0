@@ -79,5 +79,5 @@ components_by_slot:
 is_package: true
 layout:
   form_event_bindings: {hide: form_hide}
-  properties: {navigation_rail_collapse_to: modal_navigation_drawer, navigation_rail_vertical_align: center, show_sidesheet: false}
+  properties: {navigation_rail_collapse_to: bottom_app_bar, navigation_rail_vertical_align: center, show_sidesheet: false}
   type: form:dep_lin1x4oec0ytd:Layouts.NavigationRailLayout
