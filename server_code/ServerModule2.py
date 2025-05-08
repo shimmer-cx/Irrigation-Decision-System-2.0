@@ -251,8 +251,6 @@ def RunModel(current_user):
       
       crop=CustomCrop(crop_param)
       area =data['irrigationArea_infor'][3]*(crop_param["areaRatio"]/100)
-
-      # if new_Row['is_firstRun'] is True:    #要区分是否为第一次模拟
         
       weather_df=Get_weather_data(sim_startDate,location)#维度和经度
       initialWater=InitialWaterContent(value = ['SAT'])
