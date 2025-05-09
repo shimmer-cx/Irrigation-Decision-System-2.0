@@ -63,21 +63,6 @@ class HomePage(HomePageTemplate):
     else:
       open_form('irrigationPage')
 
-  def navigation_link_4_click(self, **event_args):
-    """This method is called when the component is clicked"""
-    user = anvil.users.get_user()
-    if user is None:
-      Notification('请先登录再尝试！').show()
-    else:
-      open_form('Manage_map')
-
-  def navigation_link_5_click(self, **event_args):
-    """This method is called when the component is clicked"""
-    user = anvil.users.get_user()
-    if user is None:
-      Notification('请先登录再尝试！').show()
-    else:
-      open_form('Manage_central')
 
 
 
