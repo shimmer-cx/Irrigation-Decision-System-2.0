@@ -69,7 +69,7 @@ class HomePage(HomePageTemplate):
     if user is None:
       Notification('请先登录再尝试！').show()
     else:
-      open_form()
+      open_form('Manage_map')
 
   def navigation_link_5_click(self, **event_args):
     """This method is called when the component is clicked"""
@@ -77,7 +77,7 @@ class HomePage(HomePageTemplate):
     if user is None:
       Notification('请先登录再尝试！').show()
     else:
-      open_form()
+      open_form('Manage_central')
 
 
 
