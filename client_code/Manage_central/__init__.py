@@ -36,7 +36,7 @@ class Manage_central(Manage_centralTemplate):
             info_row['lastIrrigationVolume']=irri
             info_row['lastIrrigationDate']=date
             break
-        info_row['totallVolum']=sum(irri_history)
+        info_row['totallVolum']=round(sum(irri_history),2)
         irri_future= irrigation[0:6]
         date_future= date_list[0:6]
         irri_future.reverse()#再反回来列表

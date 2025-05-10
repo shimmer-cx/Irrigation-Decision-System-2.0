@@ -1,7 +1,7 @@
 components:
 - layout_properties: {column: OZOTHM}
   name: button_1
-  properties: {appearance: text, text: 点击查看}
+  properties: {appearance: text, text: 查看}
   type: form:dep_lin1x4oec0ytd:_Components.Button
 container: {type: DataRowPanel}
 is_package: true
