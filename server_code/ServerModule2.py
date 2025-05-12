@@ -285,48 +285,7 @@ def RunModel(current_user):
       new_Row['submit_time']=nowTime
       new_Row['Zhikaikou_code']=Zhikaikou_code
       new_Row['date_list']= [date.strftime('%Y-%m-%d') for date in pd.date_range(start=sim_startDate, periods=len(irrigation), freq="D")]
-      # new_Row['is_firstRun'] = False
-      # else:
-        
-      #   sim_startDate =beijing_time.strftime('%Y/')+crop.planting_date#模型只能最晚从种植日开始模拟 
-      #   weather_df=Get_weather_data(sim_startDate,location)#维度和经度
-      #   Num= new_Row['InitialWaterContent_PlantNum']
-      #   initialWater=InitialWaterContent(wc_type = 'Num',
-      #                                   method = 'Layer',
-      #                                   depth_layer= [1,2,3,4,5,6,7,8,9,10,11,12],
-      #                                   value = Num )#要将土壤初始含水量设置到上次计算出来的结果，暂未修改
       
-      #   model = AquaCropModel(sim_start_time=sim_startDate,#遇到一个问题模型只能最晚从种植日开始 
-      #                     sim_end_time=sim_endDate,
-      #                     weather_df=weather_df,
-      #                     soil=soil,
-      #                     crop=crop,
-      #                     initial_water_content=initialWater,
-      #                     irrigation_management=irr_mngt,
-      #                     groundwater=groundWater) # create model
-      #   model.run_model(till_termination=True)#Run
-      
-      #   water_flux=model._outputs.water_flux
-      #   #water_flux=water_flux[ water_flux['season_counter'] ==0]#使用布尔表达式：根据条件过滤 DataFrame
-      #   water_flux=water_flux.iloc[:-1]#删除最后一行0行
-      
-      #   irrigation =list( water_flux['IrrDay'])
-      #   for i in range(0, len(irrigation)):
-      #     irrigation[i]=round(irrigation[i]*area*0.6666667, 2)        #亩的单位要换算
-          
-      #   # water_storage=model._outputs.water_storage         
-      #   # water_storage=water_storage.iloc[1,3:15]#获取当日的土壤水分含量,1：留下今天的Num
-      #   # water_storage=list(water_storage)
-        
-      #   water_content =list(  water_flux['Wr'])
-      #   actual_transpiration =list(  water_flux['Tr'])
-      #   datelist= [date.strftime('%Y-%m-%d') for date in pd.date_range(start=(beijing_time-timedelta(days=1)).strftime('%Y-%m-%d'), periods=7,freq="D")]
-      #   new_Row['irrigation']=new_Row['irrigation'][0:-6]+irrigation[-7:]
-      #   new_Row['water_content']= new_Row['water_content'][0:-6]+ [round(x, 2) for x in water_content][-7:]
-      #   new_Row['actual_transpiration']=new_Row['actual_transpiration'][0:-6]+ [round(x, 2) for x in actual_transpiration][-7:]
-      #   new_Row['date_list']= new_Row['date_list'][0:-6] + datelist
-      #   # new_Row['submit_time']=nowTime
-
     return '计算完成'
 
 @anvil.server.callable
