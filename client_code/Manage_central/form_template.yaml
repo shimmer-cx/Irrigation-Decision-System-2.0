@@ -23,7 +23,7 @@ components_by_slot:
       - {data_key: totallVolum, expand: false, id: KTMGCK, title: 历史总灌溉量(m3), width: 163.25}
       - {data_key: nextIrrigationDate, expand: false, id: MRQTEH, title: 下次灌溉日期, width: 165.5}
       - {data_key: naxtIrrigationVolume, expand: false, id: TNVOCK, title: 下次灌溉量(m3), width: 152.125}
-      - {data_key: column_1, id: OZOTHM, title: 查看详细灌溉规划}
+      - {data_key: column_1, id: OZOTHM, title: 详细灌溉规划}
     type: DataGrid
   - components:
     - layout_properties: {grid_position: 'EQMBXT,NPFQUB'}
