@@ -13,6 +13,9 @@ from anvil.tables import app_tables
 from aquacrop import AquaCropModel, IrrigationManagement, InitialWaterContent, GroundWater,Crop,Soil 
 import copy
 
+'''说明：此类文件中为模型运行相关方法
+'''
+
 def GetForecastWeather(lat,lon,Day):#获取预报气象数据
    
     #使用缓存设置Open-Meteo API客户端，并在出现错误时重试

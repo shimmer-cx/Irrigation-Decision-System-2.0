@@ -5,12 +5,11 @@ from anvil.tables import app_tables
 import anvil.server
 from datetime import datetime
 from zoneinfo import ZoneInfo
-
+'''说明：此类文件中为数据库处理相关函数方法
+'''
 
 @anvil.server.background_task
-def save_Zhikaikou_data(current_user,whatData,data):
-   # Get the logged in user
-    # current_user = anvil.users.get_user()#在后台任务中无法获得当前登录！！！！
+def save_Zhikaikou_data(current_user,whatData,data): #在后台任务中无法获得当前登录！
     # Check that someone is logged in
     if current_user is not None:
       # 定义北京时区
