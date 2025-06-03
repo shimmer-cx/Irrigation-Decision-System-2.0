@@ -1,15 +1,5 @@
 allow_embedding: false
 db_schema:
-  crop_growth_outputs:
-    client: none
-    columns: []
-    server: full
-    title: crop_growth_outputs
-  final_stats_outputs:
-    client: none
-    columns: []
-    server: full
-    title: final_stats_outputs
   irrigation_decisions:
     client: none
     columns:
@@ -81,11 +71,6 @@ db_schema:
       type: bool
     server: full
     title: Users
-  water_storage_outputs:
-    client: none
-    columns: []
-    server: full
-    title: water_storage_outputs
   weather_data:
     client: none
     columns:
