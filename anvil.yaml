@@ -39,7 +39,13 @@ db_schema:
       name: Zhikaikou_code
       type: string
     - admin_ui: {order: 11, width: 200}
-      name: weatherData
+      name: ReferenceET
+      type: simpleObject
+    - admin_ui: {order: 12, width: 200}
+      name: MaxTemp
+      type: simpleObject
+    - admin_ui: {order: 13, width: 200}
+      name: MinTemp
       type: simpleObject
     server: full
     title: Irrigation_decisions
