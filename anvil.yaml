@@ -38,6 +38,9 @@ db_schema:
     - admin_ui: {order: 0.375, width: 200}
       name: Zhikaikou_code
       type: string
+    - admin_ui: {order: 11, width: 200}
+      name: weatherData
+      type: simpleObject
     server: full
     title: Irrigation_decisions
   users:

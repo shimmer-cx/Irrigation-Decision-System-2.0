@@ -288,7 +288,7 @@ def RunModel(current_user):
       new_Row['submit_time']=nowTime
       new_Row['Zhikaikou_code']=Zhikaikou_code
       new_Row['date_list']= [date.strftime('%Y-%m-%d') for date in pd.date_range(start=sim_startDate, periods=len(irrigation), freq="D")]
-      
+      new_Row['weatherData']=list(weather_df["ReferenceET"])
     return '计算完成'
 
 @anvil.server.callable
