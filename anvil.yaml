@@ -49,6 +49,11 @@ db_schema:
       type: simpleObject
     server: full
     title: Irrigation_decisions
+  table_7:
+    client: none
+    columns: []
+    server: full
+    title: Table 7
   users:
     client: none
     columns:
