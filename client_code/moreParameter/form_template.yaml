@@ -1,0 +1,27 @@
+components_by_slot:
+  content:
+  - layout_properties: {}
+    name: heading_1
+    properties: {align: center, text: 为直开口用户设定更多作物参数}
+    type: form:dep_lin1x4oec0ytd:_Components.Heading
+  navigation:
+  - layout_properties: {}
+    name: navigation_link_1
+    properties: {navigate_to: Manage_map, text: 灌区地图}
+    type: form:dep_lin1x4oec0ytd:_Components.NavigationLink
+  - layout_properties: {}
+    name: navigation_link_2
+    properties: {navigate_to: Manage_central, text: 信息汇总}
+    type: form:dep_lin1x4oec0ytd:_Components.NavigationLink
+  - layout_properties: {}
+    name: navigation_link_3
+    properties: {selected: true, text: 更多参数}
+    type: form:dep_lin1x4oec0ytd:_Components.NavigationLink
+  - layout_properties: {}
+    name: navigation_link_4
+    properties: {navigate_to: HomePage, text: 回到主页}
+    type: form:dep_lin1x4oec0ytd:_Components.NavigationLink
+is_package: true
+layout:
+  properties: {navigation_rail_vertical_align: center, show_sidesheet: false}
+  type: form:dep_lin1x4oec0ytd:Layouts.NavigationRailLayout

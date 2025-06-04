@@ -30,7 +30,7 @@ db_schema:
       type: link_single
     server: full
     title: Irrigation_decisions
-  precisecropparameter:
+  preciseparameter:
     client: none
     columns:
     - admin_ui: {order: 0, width: 200}
@@ -41,10 +41,10 @@ db_schema:
       name: cropName
       type: string
     - admin_ui: {order: 2, width: 200}
-      name: parameter
+      name: CropParameter
       type: simpleObject
     server: full
-    title: PreciseCropParameter
+    title: PreciseParameter
   users:
     client: none
     columns:
