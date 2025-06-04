@@ -31,12 +31,12 @@ class irrigationPage(irrigationPageTemplate):
     date_list=data['date_list']
     irrigation.reverse()#反向列表
     date_list.reverse()#反向列表
-    irri_history=irrigation[6:]
-    date_history=date_list[6:]
+    irri_history=irrigation[8:]
+    date_history=date_list[8:]
     irrigationHistory.irri_history=irri_history#
     irrigationHistory.date_history=date_history#
-    irri_future= irrigation[0:6]
-    date_future= date_list[0:6]
+    irri_future= irrigation[0:8]
+    date_future= date_list[0:8]
     irri_future.reverse()#再反回来列表
     date_future.reverse()#再反回来列表
     for irri,date in zip(irri_history,date_history):
@@ -50,11 +50,11 @@ class irrigationPage(irrigationPageTemplate):
         self.text_3.text=date    
         break
     Tr=data['actual_transpiration']
-    self.text_5.text=str(Tr[-7])+'mm(昨日)'
-    self.text_4.text=str(Tr[-6])+'mm(今日)'
+    self.text_5.text=str(Tr[-8])+'mm(昨日)'
+    self.text_4.text=str(Tr[-7])+'mm(今日)'
     Wr=data['water_content']
-    self.text_6.text=str(Wr[-6])+'mm(今日)'
-    self.text_6_copy.text=str(Wr[-5])+'mm(明日)'
+    self.text_6.text=str(Wr[-7])+'mm(今日)'
+    self.text_6_copy.text=str(Wr[-6])+'mm(明日)'
 
   def form_show(self, **event_args):
     """This method is called when the form is shown on the page"""

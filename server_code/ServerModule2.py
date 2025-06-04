@@ -212,7 +212,7 @@ def RunModel(current_user):
     beijing_time = datetime.now(beijing_tz).replace(tzinfo=None)
     nowTime=beijing_time.strftime('%Y-%m-%d %H:%M:%S')
     N=7   #从现在开始向前运行 N 天，也即模拟结束时间为一周后结束,由于模型自身因素。只能计算到未来第6天
-    sim_endDate =beijing_time+ timedelta(days=N-1)
+    sim_endDate =beijing_time+ timedelta(days=N)
     sim_endDate=sim_endDate.strftime('%Y/%m/%d')
     #SMT | list[float] | 每个生长阶段要维持的土壤水分目标（%TAW）
     irr_mngt=IrrigationManagement(irrigation_method=1,SMT=smt)
@@ -258,10 +258,7 @@ def RunModel(current_user):
       new_Row['submit_time']=nowTime
       new_Row['Zhikaikou_code']=Zhikaikou_code
       new_Row['date_list']= [date.strftime('%Y-%m-%d') for date in pd.date_range(start=sim_startDate, periods=len(irrigation), freq="D")]
-      new_Row['ReferenceET']=list(weather_df["ReferenceET"])
-      new_Row['MaxTemp']=list(weather_df["MaxTemp"])
-      new_Row['MinTemp']=list(weather_df["MinTemp"])
-      new_Row['rainfall']=list(weather_df["Precipitation"])
+      
     return '计算完成'
 
 @anvil.server.callable

@@ -28,18 +28,6 @@ db_schema:
       name: User
       target: users
       type: link_single
-    - admin_ui: {width: 200}
-      name: ReferenceET
-      type: simpleObject
-    - admin_ui: {width: 200}
-      name: MaxTemp
-      type: simpleObject
-    - admin_ui: {width: 200}
-      name: MinTemp
-      type: simpleObject
-    - admin_ui: {width: 200}
-      name: rainfall
-      type: number
     server: full
     title: Irrigation_decisions
   users:

@@ -29,16 +29,16 @@ class Manage_central(Manage_centralTemplate):
         irrigation.reverse()
         date_list.reverse()#反向列表
         #历史灌溉记录
-        irri_history=irrigation[6:]
-        date_history=date_list[6:]
+        irri_history=irrigation[8:]
+        date_history=date_list[8:]
         for irri,date in zip(irri_history,date_history):
           if irri>0:
             info_row['lastIrrigationVolume']=irri
             info_row['lastIrrigationDate']=date
             break
         info_row['totallVolum']=round(sum(irri_history),2)
-        irri_future= irrigation[0:6]
-        date_future= date_list[0:6]
+        irri_future= irrigation[0:8]
+        date_future= date_list[0:8]
         irri_future.reverse()#再反回来列表
         date_future.reverse()#再反回来列表
         for irri,date in zip(irri_future,date_future):
