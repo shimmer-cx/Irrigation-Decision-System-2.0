@@ -94,7 +94,7 @@ def Get_weather_data(simStartDate, location, current_user, crop):
       new_Row['MaxTemp']=list(forecast_weather['MaxTemp'])
       new_Row['Precipitation']=list(forecast_weather['Precipitation'])
       new_Row['ReferenceET']=list(forecast_weather['ReferenceET'])
-      new_Row['Date']=list(forecast_weather['Date'])
+      new_Row['Date']= [date.strftime('%Y-%m-%d') for date in list(forecast_weather['Date'])]
       return forecast_weather
     elif beijing_time-Start_Date>timedelta(days=1):#以后
       
@@ -105,14 +105,15 @@ def Get_weather_data(simStartDate, location, current_user, crop):
       list_2=new_Row['MaxTemp'][0:-8]+list(forecast_weather['MaxTemp'])
       list_3=new_Row['Precipitation'][0:-8]+list(forecast_weather['Precipitation'])
       list_4=new_Row['ReferenceET'][0:-8]+list(forecast_weather['ReferenceET'])
-      list_5=new_Row['Date'][0:-8]+list(forecast_weather['Date'])
+      Date=[datetime.strptime(date,'%Y-%m-%d') for date in new_Row['Date'][0:-8]]
+      list_5=Date+list(forecast_weather['Date'])
       
       weatherData={'MinTemp':list_1,'MaxTemp':list_2,'Precipitation':list_3,'ReferenceET':list_4,'Date':list_5}
       new_Row['MinTemp']=list_1
       new_Row['MaxTemp']=list_2
       new_Row['Precipitation']=list_3
       new_Row['ReferenceET']=list_4
-      new_Row['Date']=list_5
+      new_Row['Date']=[date.strftime('%Y-%m-%d') for date in list_5]
       
       return pd.DataFrame(weatherData)
     
