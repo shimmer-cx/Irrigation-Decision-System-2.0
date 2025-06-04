@@ -1,0 +1,10 @@
+components_by_slot:
+  navigation:
+  - layout_properties: {}
+    name: navigation_link_1
+    properties: {icon: 'mi:back_to_tab', text: 返回}
+    type: form:dep_lin1x4oec0ytd:_Components.NavigationLink
+is_package: true
+layout:
+  properties: {navigation_rail_vertical_align: center, show_sidesheet: false}
+  type: form:dep_lin1x4oec0ytd:Layouts.NavigationRailLayout

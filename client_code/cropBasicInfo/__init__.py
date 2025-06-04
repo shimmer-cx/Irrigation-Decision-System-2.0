@@ -6,7 +6,7 @@ import anvil.users
 import copy
 
 class cropBasicInfo(cropBasicInfoTemplate):
-  crop_row={'cropName':'玉米','Type':'默认','plantMethod':'默认','areaRatio':100,'plantDate':'缺失','harvesDate':'缺失'}
+  crop_row={'cropName':'玉米','Type':'默认','plantMethod':'默认','areaRatio':100,'plantDate':'缺失','harvesDate':'缺失','moreParameter':'否'}
   num_rows=0#表的行数
   diffrentCrop=[]
 
@@ -79,7 +79,7 @@ class cropBasicInfo(cropBasicInfoTemplate):
     self.repeating_panel_1.items=[]
     self.diffrentCrop=[]
     self.num_rows=0
-    self.crop_row={'cropName':'玉米','Type':'默认','plantMethod':'默认','areaRatio':100,'plantDate':'缺失','harvesDate':'缺失'}
+    self.crop_row={'cropName':'玉米','Type':'默认','plantMethod':'默认','areaRatio':100,'plantDate':'缺失','harvesDate':'缺失','moreParameter':'否'}
 
   def form_hide(self, **event_args):
     """This method is called when the form is removed from the page"""
@@ -89,5 +89,9 @@ class cropBasicInfo(cropBasicInfoTemplate):
   def slider_1_change(self, **event_args):
     """This method is called when the value of the component is changed"""
     self.text_2.text=str(self.slider_1.value)+'%'
+
+  def checkbox_1_change(self, **event_args):
+    """This method is called when the component is checked or unchecked"""
+    open_form('cropBasicInfo.moreParameter')
 
  
