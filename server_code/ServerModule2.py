@@ -132,7 +132,8 @@ def Get_weather_data(simStartDate, location):
       forecast_weather=GetForecastWeather(location,0)
     else:
       forecast_weather=GetForecastWeather(location,1)
-      
+    new_Row=(app_tables.historyweatherdata.get(crop_name=crop_param['cropName'],User=current_user)
+           or app_tables.historyweatherdata.add_row(crop_name=crop_param['cropName'],User=current_user))
     # if d >= 3:
 
     #   end_date =beijing_time-timedelta(days=3)
