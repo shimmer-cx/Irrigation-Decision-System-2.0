@@ -78,7 +78,7 @@ def Get_weather_data(simStartDate, location, current_user, crop):
     # 定义北京时区
     beijing_tz = ZoneInfo('Asia/Shanghai')
     # 获取北京时间
-    beijing_time = datetime.now(beijing_tz).replace(tzinfo=None)
+    beijing_time = datetime.now(beijing_tz).replace(tzinfo=None,hour=0, minute=0, second=0, microsecond=0)
     # d=int((beijing_time-Start_Date)/ timedelta(days=1))
     #获取预测气象数据(#如果在模拟当天获取数据，days=0,否则days=1)
     if beijing_time-Start_Date==timedelta(days=0):#模拟当天
