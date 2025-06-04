@@ -89,26 +89,31 @@ def Get_weather_data(simStartDate, location, current_user, crop):
      
       forecast_weather=GetForecastWeather(location,1)
       forecast_weather=forecast_weather.iloc[:-6]#取预报8天
-      weatherData={'MinTemp':list(forecast_weather['MinTemp']),'MaxTemp':list(forecast_weather['MaxTemp']),
-                   'Precipitation':list(forecast_weather['Precipitation']),
-                   'ReferenceET':list(forecast_weather['ReferenceET']),
-                   'Date':list(forecast_weather['Date'])}
-      new_Row['weatherData']=weatherData
+     
+      new_Row['MinTemp']=list(forecast_weather['MinTemp'])
+      new_Row['MaxTemp']=list(forecast_weather['MaxTemp'])
+      new_Row['Precipitation']=list(forecast_weather['Precipitation'])
+      new_Row['ReferenceET']=list(forecast_weather['ReferenceET'])
+      new_Row['Date']=list(forecast_weather['Date'])
       return forecast_weather
     elif beijing_time-Start_Date>timedelta(days=1):#以后
       
       forecast_weather=GetForecastWeather(location,1)
       forecast_weather=forecast_weather.iloc[:-6]#取预报8天
-      historyData=new_Row['weatherData']
-      list_1=historyData['MinTemp'][0:-8]+list(forecast_weather['MinTemp'])
-      list_2=historyData['MaxTemp'][0:-8]+list(forecast_weather['MaxTemp'])
-      list_3=historyData['Precipitation'][0:-8]+list(forecast_weather['Precipitation'])
-      list_4=historyData['ReferenceET'][0:-8]+list(forecast_weather['ReferenceET'])
-      list_5=historyData['Date'][0:-8]+list(forecast_weather['Date'])
+     
+      list_1=new_Row['MinTemp'][0:-8]+list(forecast_weather['MinTemp'])
+      list_2=new_Row['MaxTemp'][0:-8]+list(forecast_weather['MaxTemp'])
+      list_3=new_Row['Precipitation'][0:-8]+list(forecast_weather['Precipitation'])
+      list_4=new_Row['ReferenceET'][0:-8]+list(forecast_weather['ReferenceET'])
+      list_5=new_Row['Date'][0:-8]+list(forecast_weather['Date'])
       
       weatherData={'MinTemp':list_1,'MaxTemp':list_2,'Precipitation':list_3,'ReferenceET':list_4,'Date':list_5}
-
-      new_Row['weatherData']=weatherData
+      new_Row['MinTemp']=list_1
+      new_Row['MaxTemp']=list_2
+      new_Row['Precipitation']=list_3
+      new_Row['ReferenceET']=list_4
+      new_Row['Date']=list_5
+      
       return pd.DataFrame(weatherData)
     
      
