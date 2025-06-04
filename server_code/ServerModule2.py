@@ -33,7 +33,7 @@ def GetForecastWeather(location,days):#获取预报气象数据
 	    "wind_speed_unit": "ms",
 	    "timezone": "Asia/Shanghai",
       "past_days": days,#如果在模拟当天获取数据，days=0,否则days=1
-      "forecast_days": 8,
+      "forecast_days": 14,
 	    "models": "cma_grapes_global"
     }
     responses = openmeteo.weather_api(url, params=params)
@@ -67,58 +67,11 @@ def GetForecastWeather(location,days):#获取预报气象数据
 
     return daily_dataframe
 
-# def GetHistoryWeather(lat,lon,start_date,end_dat):#获取历史气象数据
-#     # day=3#历史气象数据可能最晚到3天前的数据
-#     # Setup the Open-Meteo API client with cache and retry on error
-#     cache_session = requests_cache.CachedSession('.cache', expire_after = -1)
-#     retry_session = retry(cache_session, retries = 5, backoff_factor = 0.2)
-#     openmeteo = openmeteo_requests.Client(session = retry_session)
-
-#     # Make sure all required weather variables are listed here
-#     # The order of variables in hourly or daily is important to assign them correctly below
-#     url = "https://archive-api.open-meteo.com/v1/archive"
-#     params = {
-# 	    "latitude": lat,
-# 	    "longitude": lon,
-# 	    "start_date": start_date,
-# 	    "end_date": end_dat,
-# 	    "daily": ["temperature_2m_max", "temperature_2m_min", "precipitation_sum", "et0_fao_evapotranspiration"],
-# 	    "timezone": "Asia/Singapore",
-#     }
-
-#     responses = openmeteo.weather_api(url, params=params)
-
-#     # Process first location. Add a for-loop for multiple locations or weather models
-#     response = responses[0]
-
-#     # Process daily data. The order of variables needs to be the same as requested.
-#     daily = response.Daily()
-#     daily_temperature_2m_max = daily.Variables(0).ValuesAsNumpy()
-#     daily_temperature_2m_min = daily.Variables(1).ValuesAsNumpy()
-#     daily_precipitation_sum = daily.Variables(2).ValuesAsNumpy()
-#     daily_et0_fao_evapotranspiration = daily.Variables(3).ValuesAsNumpy()
-
-#     daily_data = {"Date": pd.date_range(
-# 	    start = pd.to_datetime(daily.Time()+28800, unit = "s", utc = True).replace(tzinfo = None).floor("D"),
-# 	    end = pd.to_datetime(daily.TimeEnd()+28800, unit = "s", utc = True).replace(tzinfo = None).floor("D"),
-# 	    freq = pd.Timedelta(seconds = daily.Interval()),
-# 	    inclusive = "left"
-#     )}
-
-#     daily_data["MaxTemp"] = daily_temperature_2m_max
-#     daily_data["MinTemp"] = daily_temperature_2m_min
-#     daily_data["Precipitation"] = daily_precipitation_sum
-#     daily_data["ReferenceET"] = daily_et0_fao_evapotranspiration
-
-#     daily_dataframe = pd.DataFrame(data = daily_data)
-#     #把时间列放在最后,日最低温度列放在第一列
-#     daily_dataframe=daily_dataframe[['MinTemp','MaxTemp','Precipitation','ReferenceET','Date']]
-
-#     return daily_dataframe
 
 
-def Get_weather_data(simStartDate, location):
-    
+def Get_weather_data(simStartDate, location, current_user, crop):
+    new_Row=(app_tables.weatherdata.get(User=current_user,crop=crop)
+             or app_tables.weatherdata.add_row(User=current_user,crop=crop))
     Start_Date=datetime.strptime(simStartDate, "%Y/%m/%d")
     # sim_Start_Date=Start_Date.strftime('%Y-%m-%d')
     # day=3#历史气象数据最晚到3天前的数据
@@ -128,29 +81,39 @@ def Get_weather_data(simStartDate, location):
     beijing_time = datetime.now(beijing_tz).replace(tzinfo=None)
     # d=int((beijing_time-Start_Date)/ timedelta(days=1))
     #获取预测气象数据(#如果在模拟当天获取数据，days=0,否则days=1)
-    if beijing_time-Start_Date<timedelta(days=1):
-      forecast_weather=GetForecastWeather(location,0)
-    else:
-      forecast_weather=GetForecastWeather(location,1)
-    new_Row=(app_tables.historyweatherdata.get(crop_name=crop_param['cropName'],User=current_user)
-           or app_tables.historyweatherdata.add_row(crop_name=crop_param['cropName'],User=current_user))
-    # if d >= 3:
-
-    #   end_date =beijing_time-timedelta(days=3)
-    #   end_date=end_date.strftime('%Y-%m-%d')
-    #   #获取历史气象数据
-    #   history_weather=GetHistoryWeather(location[0],location[1],sim_Start_Date,end_date)
-    #   #获取预测气象数据(里面包含了2天的历史数据)
-    #   forecast_weather=GetForecastWeather(location[0],location[1],2)
-    #   return pd.concat([history_weather,forecast_weather])
-    # else:
-
-    #   #获取预测气象数据(里面包含了1天的历史数据)
-    #   forecast_weather=GetForecastWeather(location[0],location[1],d)
-      return forecast_weather
+    if beijing_time-Start_Date==timedelta(days=0):#模拟当天
       
-   
+      forecast_weather=GetForecastWeather(location,0)
+      return forecast_weather.iloc[:-6]#取预报8天
+    elif beijing_time-Start_Date==timedelta(days=1):#第二天
+     
+      forecast_weather=GetForecastWeather(location,1)
+      forecast_weather=forecast_weather.iloc[:-6]#取预报8天
+      weatherData={'MinTemp':list(forecast_weather['MinTemp']),'MaxTemp':list(forecast_weather['MaxTemp']),
+                   'Precipitation':list(forecast_weather['Precipitation']),
+                   'ReferenceET':list(forecast_weather['ReferenceET']),
+                   'Date':list(forecast_weather['Date'])}
+      new_Row['weatherData']=weatherData
+      return forecast_weather
+    elif beijing_time-Start_Date>timedelta(days=1):#以后
+      
+      forecast_weather=GetForecastWeather(location,1)
+      forecast_weather=forecast_weather.iloc[:-6]#取预报8天
+      historyData=new_Row['weatherData']
+      list_1=historyData['MinTemp'][0:-8]+list(forecast_weather['MinTemp'])
+      list_2=historyData['MaxTemp'][0:-8]+list(forecast_weather['MaxTemp'])
+      list_3=historyData['Precipitation'][0:-8]+list(forecast_weather['Precipitation'])
+      list_4=historyData['ReferenceET'][0:-8]+list(forecast_weather['ReferenceET'])
+      list_5=historyData['Date'][0:-8]+list(forecast_weather['Date'])
+      
+      weatherData={'MinTemp':list_1,'MaxTemp':list_2,'Precipitation':list_3,'ReferenceET':list_4,'Date':list_5}
 
+      new_Row['weatherData']=weatherData
+      return pd.DataFrame(weatherData)
+    
+     
+
+      
 def CustomSoil(soilParam):
 
     soilType =soilParam[0]
@@ -262,7 +225,7 @@ def RunModel(current_user):
       crop=CustomCrop(crop_param)
       area =data['irrigationArea_infor'][3]*(crop_param["areaRatio"]/100)
         
-      weather_df=Get_weather_data(sim_startDate,location)#维度和经度
+      weather_df=Get_weather_data(sim_startDate,location,current_user,crop_param['cropName'])#维度和经度
       initialWater=InitialWaterContent(value = ['SAT'])
       model = AquaCropModel(sim_start_time=sim_startDate,
                           sim_end_time=sim_endDate,

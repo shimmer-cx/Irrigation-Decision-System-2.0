@@ -1,29 +1,5 @@
 allow_embedding: false
 db_schema:
-  historyweatherdata:
-    client: none
-    columns:
-    - admin_ui: {width: 200}
-      name: date
-      type: date
-    - admin_ui: {width: 200}
-      name: MaxTemp
-      type: number
-    - admin_ui: {width: 200}
-      name: MinTemp
-      type: number
-    - admin_ui: {width: 200}
-      name: precipitation
-      type: number
-    - admin_ui: {width: 200}
-      name: ET0
-      type: number
-    - admin_ui: {width: 200}
-      name: cropInformation
-      target: zhikaikouuser_data
-      type: link_single
-    server: full
-    title: historyWeatherData
   irrigation_decisions:
     client: none
     columns:
@@ -98,6 +74,21 @@ db_schema:
       type: bool
     server: full
     title: Users
+  weatherdata:
+    client: none
+    columns:
+    - admin_ui: {order: 1.25, width: 200}
+      name: User
+      target: users
+      type: link_single
+    - admin_ui: {order: 1.375, width: 200}
+      name: Crop
+      type: string
+    - admin_ui: {order: 2.375, width: 200}
+      name: weatherData
+      type: simpleObject
+    server: full
+    title: WeatherData
   zhikaikouuser_data:
     client: none
     columns:
