@@ -51,7 +51,7 @@ class irrigationPage(irrigationPageTemplate):
         break
     Tr=data['actual_transpiration']
     self.text_5.text=str(Tr[-7])+'mm(今日)'
-    self.text_4.text=str(Tr[-6])+'mm(昨日)'
+    self.text_4.text=str(Tr[-6])+'mm(明日)'
     Wr=data['water_content']
     self.text_6.text=str(Wr[-7])+'mm(今日)'
     self.text_6_copy.text=str(Wr[-6])+'mm(明日)'
