@@ -71,7 +71,7 @@ def GetForecastWeather(location,days):#获取预报气象数据
 
 def Get_weather_data(simStartDate, location, current_user, crop):
     new_Row=(app_tables.weatherdata.get(User=current_user,crop=crop)
-             or app_tables.weatherdata.add_row(User=current_user,crop=crop))
+             or app_tables.weatherdata.add_row(User=current_user,crop=crop,Date=[-1]))
     Start_Date=datetime.strptime(simStartDate, "%Y/%m/%d")
     # sim_Start_Date=Start_Date.strftime('%Y-%m-%d')
     # day=3#历史气象数据最晚到3天前的数据
@@ -86,8 +86,9 @@ def Get_weather_data(simStartDate, location, current_user, crop):
       forecast_weather=GetForecastWeather(location,0)
       return forecast_weather.iloc[:-6]#取预报8天
     elif beijing_time-Start_Date==timedelta(days=1):#第二天
-      if datetime.strptime(new_Row['Date'][-1],'%Y-%m-%d')-beijing_time==timedelta(days=7):#数据库中已经有气象预报数据了
-        weatherData={'MinTemp':new_Row['MinTemp'],'MaxTemp':new_Row['MaxTemp'],'Precipitation':new_Row['Precipitation'],'ReferenceET':new_Row['ReferenceET'],'Date':new_Row['Date']}
+      if new_Row['Date'][0] !=-1 and datetime.strptime(new_Row['Date'][-1],'%Y-%m-%d')-beijing_time==timedelta(days=7):#数据库中已经有气象预报数据了
+        weatherData={'MinTemp':new_Row['MinTemp'],'MaxTemp':new_Row['MaxTemp'],'Precipitation':new_Row['Precipitation'],
+                     'ReferenceET':new_Row['ReferenceET'],'Date':[datetime.strptime(date,'%Y-%m-%d') for date in new_Row['Date']]}
         return pd.DataFrame(weatherData)
       else:
         forecast_weather=GetForecastWeather(location,1)
@@ -101,8 +102,9 @@ def Get_weather_data(simStartDate, location, current_user, crop):
         return forecast_weather
     elif beijing_time-Start_Date>timedelta(days=1):#以后
 
-      if datetime.strptime(new_Row['Date'][-1],'%Y-%m-%d')-beijing_time==timedelta(days=7):#数据库中已经有气象预报数据了
-        weatherData={'MinTemp':new_Row['MinTemp'],'MaxTemp':new_Row['MaxTemp'],'Precipitation':new_Row['Precipitation'],'ReferenceET':new_Row['ReferenceET'],'Date':new_Row['Date']}
+      if new_Row['Date'][0] !=-1 and datetime.strptime(new_Row['Date'][-1],'%Y-%m-%d')-beijing_time==timedelta(days=7):#数据库中已经有气象预报数据了
+        weatherData={'MinTemp':new_Row['MinTemp'],'MaxTemp':new_Row['MaxTemp'],'Precipitation':new_Row['Precipitation'],
+                     'ReferenceET':new_Row['ReferenceET'],'Date':[datetime.strptime(date,'%Y-%m-%d') for date in new_Row['Date']]}
         return pd.DataFrame(weatherData)
       else:
         forecast_weather=GetForecastWeather(location,1)
@@ -205,11 +207,18 @@ def CustomGroundWater(waterTable):
 
 @anvil.server.background_task
 def RunModel(current_user):
-     
+    # 定义北京时区
+    beijing_tz = ZoneInfo('Asia/Shanghai')
+    # 获取北京时间
+    beijing_time = datetime.now(beijing_tz).replace(tzinfo=None)     
     data = app_tables.zhikaikouuser_data.get(User=current_user)  
-    if data is None or current_user is None or current_user['is_manager'] is True:
+    if data is None or current_user is None:# or current_user['is_manager'] is True:
       return  '新用户或从没有提交过模型数据的就不要执行以下模块/管理员账户也不用执行'
-    
+      
+    irri_info=app_tables.irrigation_decisions.get(User=current_user)
+    if irri_info is not None and beijing_time.strftime('%Y-%m-%d') in str(irri_info['submit_time']):
+      return  '当日已经运行过也不用执行'
+      
     sim_startDate = data['irrigationArea_infor'][-1]
     location = data['irrigationArea_infor'][1:3]
     crop_params =data['crop_infor']
@@ -219,10 +228,7 @@ def RunModel(current_user):
   
     soil=CustomSoil(soilParam)
     groundWater=CustomGroundWater(data['water_table'])
-    # 定义北京时区
-    beijing_tz = ZoneInfo('Asia/Shanghai')
-    # 获取北京时间
-    beijing_time = datetime.now(beijing_tz).replace(tzinfo=None)
+
     nowTime=beijing_time.strftime('%Y-%m-%d %H:%M:%S')
     N=7   #从现在开始向前运行 N 天，也即模拟结束时间为一周后结束,由于模型自身因素。只能计算到未来第6天
     sim_endDate =beijing_time+ timedelta(days=N)

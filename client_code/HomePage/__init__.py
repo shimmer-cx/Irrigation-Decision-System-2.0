@@ -2,15 +2,14 @@ from ._anvil_designer import HomePageTemplate
 from anvil import *
 import anvil.server
 import anvil.users
-import anvil.tables as tables
-import anvil.tables.query as q
-from anvil.tables import app_tables
 
 
 class HomePage(HomePageTemplate):
   
   def __init__(self, **properties):
+    
     anvil.server.call('background_task_RunModel')
+    
     # Set Form properties and Data Bindings.
     self.init_components(**properties)
     user = anvil.users.get_user()
@@ -21,6 +20,7 @@ class HomePage(HomePageTemplate):
       self.button_1.visible=False
       self.button_2.visible=True
     # Any code you write here will run before the form opens.
+
 
 
   def image_2_mouse_up(self, x, y, button, **event_args):
