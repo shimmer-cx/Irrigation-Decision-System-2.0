@@ -2,7 +2,7 @@ components_by_slot:
   content:
   - layout_properties: {}
     name: heading_1
-    properties: {icon: 'mi:auto_schedule', text: 系统为你制定的高效灌溉计划}
+    properties: {align: center, icon: 'mi:auto_schedule', text: 你的灌溉计划}
     type: form:dep_lin1x4oec0ytd:_Components.Heading
   - layout_properties: {}
     name: spacer_1

@@ -15,7 +15,7 @@ components_by_slot:
     type: form:dep_lin1x4oec0ytd:_Components.NavigationLink
   - layout_properties: {}
     name: navigation_link_3
-    properties: {selected: true, text: 更多参数}
+    properties: {icon: 'mi:read_more', selected: true, text: 更多参数}
     type: form:dep_lin1x4oec0ytd:_Components.NavigationLink
   - layout_properties: {}
     name: navigation_link_4
