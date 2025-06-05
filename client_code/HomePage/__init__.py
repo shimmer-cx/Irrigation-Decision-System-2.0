@@ -8,14 +8,13 @@ from anvil.tables import app_tables
 
 
 class HomePage(HomePageTemplate):
-  user = anvil.users.get_user()
   
   def __init__(self, **properties):
     anvil.server.call('background_task_RunModel')
     # Set Form properties and Data Bindings.
     self.init_components(**properties)
-    
-    if self.user is None:
+    user = anvil.users.get_user()
+    if user is None:
       self.button_1.visible=True
       self.button_2.visible=False
     else:
@@ -52,51 +51,52 @@ class HomePage(HomePageTemplate):
 
   def link_1_click(self, **event_args):
     """This method is called clicked"""
-
-    if self.user is None:
+    user = anvil.users.get_user()
+    if user is None:
       Notification('请先登录再尝试！').show()
     else:
       open_form('BasicInfo_irrigationArea')
 
   def link_2_click(self, **event_args):
     """This method is called clicked"""
-
-    if self.user is None:
+    user = anvil.users.get_user()
+    if user is None:
       Notification('请先登录再尝试！').show()
     else:
-      open_form('irrigationPage')
+      if anvil.server.call('get_zhiKaiKou_info') is not None:
+        open_form('irrigationPage')
+      else:
+        Notification('你还未输入直开口相关信息，或已输入但还未完成首次计算！').show()
 
   def navigation_link_4_click(self, **event_args):
     """This method is called when the component is clicked"""
-
-    if self.user is None:
+    user = anvil.users.get_user()
+    if user is None:
       Notification('请先登录再尝试！').show()
     else:
-      userRow=app_tables.users.get(email=self.user)
-      if userRow['is_manager'] is True:
+     if user['is_manager'] is True:
         open_form('Manage_map')
-      else:
+     else:
         Notification('当前账户非管理中心账户！').show()
 
   def navigation_link_5_click(self, **event_args):
     """This method is called when the component is clicked"""
-   
-    if self.user is None:
+    user = anvil.users.get_user()
+    if user is None:
       Notification('请先登录再尝试！').show()
     else:
-      userRow=app_tables.users.get(email=self.user)
-      if userRow['is_manager'] is True:
+      if user['is_manager'] is True:
         open_form('Manage_central')
       else:
         Notification('当前账户非管理中心账户！').show()
 
   def navigation_link_1_click(self, **event_args):
     """This method is called when the component is clicked"""
-    if self.user is None:
+    user = anvil.users.get_user()
+    if user is None:
       Notification('请先登录再尝试！').show()
     else:
-      userRow=app_tables.users.get(email=self.user)
-      if userRow['is_manage'] is True:
+      if user['is_manager'] is True:
         open_form('moreParameter')
       else:
         Notification('当前账户非管理中心账户！').show()

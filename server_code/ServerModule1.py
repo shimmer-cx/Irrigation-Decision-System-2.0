@@ -39,6 +39,13 @@ def get_irrigation_info():
 @anvil.tables.in_transaction
 def getAllUsersIrriInfo():
     return app_tables.irrigation_decisions.search()
+
+@anvil.server.callable
+@anvil.tables.in_transaction
+def get_zhiKaiKou_info():
+  current_user = anvil.users.get_user()
+  if current_user is not None:
+    return app_tables.zhikaikouuser_data.get(User=current_user)
 # This is a server module. It runs on the Anvil server,
 # rather than in the user's browser.
 #
