@@ -86,36 +86,43 @@ def Get_weather_data(simStartDate, location, current_user, crop):
       forecast_weather=GetForecastWeather(location,0)
       return forecast_weather.iloc[:-6]#取预报8天
     elif beijing_time-Start_Date==timedelta(days=1):#第二天
+      if datetime.strptime(new_Row['Date'][-1],'%Y-%m-%d')-beijing_time==timedelta(days=7):#数据库中已经有气象预报数据了
+        weatherData={'MinTemp':new_Row['MinTemp'],'MaxTemp':new_Row['MaxTemp'],'Precipitation':new_Row['Precipitation'],'ReferenceET':new_Row['ReferenceET'],'Date':new_Row['Date']}
+        return pd.DataFrame(weatherData)
+      else:
+        forecast_weather=GetForecastWeather(location,1)
+        forecast_weather=forecast_weather.iloc[:-6]#取预报8天
      
-      forecast_weather=GetForecastWeather(location,1)
-      forecast_weather=forecast_weather.iloc[:-6]#取预报8天
-     
-      new_Row['MinTemp']=list(forecast_weather['MinTemp'])
-      new_Row['MaxTemp']=list(forecast_weather['MaxTemp'])
-      new_Row['Precipitation']=list(forecast_weather['Precipitation'])
-      new_Row['ReferenceET']=list(forecast_weather['ReferenceET'])
-      new_Row['Date']= [date.strftime('%Y-%m-%d') for date in list(forecast_weather['Date'])]
-      return forecast_weather
+        new_Row['MinTemp']=list(forecast_weather['MinTemp'])
+        new_Row['MaxTemp']=list(forecast_weather['MaxTemp'])
+        new_Row['Precipitation']=list(forecast_weather['Precipitation'])
+        new_Row['ReferenceET']=list(forecast_weather['ReferenceET'])
+        new_Row['Date']= [date.strftime('%Y-%m-%d') for date in list(forecast_weather['Date'])]
+        return forecast_weather
     elif beijing_time-Start_Date>timedelta(days=1):#以后
-      
-      forecast_weather=GetForecastWeather(location,1)
-      forecast_weather=forecast_weather.iloc[:-6]#取预报8天
+
+      if datetime.strptime(new_Row['Date'][-1],'%Y-%m-%d')-beijing_time==timedelta(days=7):#数据库中已经有气象预报数据了
+        weatherData={'MinTemp':new_Row['MinTemp'],'MaxTemp':new_Row['MaxTemp'],'Precipitation':new_Row['Precipitation'],'ReferenceET':new_Row['ReferenceET'],'Date':new_Row['Date']}
+        return pd.DataFrame(weatherData)
+      else:
+        forecast_weather=GetForecastWeather(location,1)
+        forecast_weather=forecast_weather.iloc[:-6]#取预报8天
      
-      list_1=new_Row['MinTemp'][0:-8]+list(forecast_weather['MinTemp'])
-      list_2=new_Row['MaxTemp'][0:-8]+list(forecast_weather['MaxTemp'])
-      list_3=new_Row['Precipitation'][0:-8]+list(forecast_weather['Precipitation'])
-      list_4=new_Row['ReferenceET'][0:-8]+list(forecast_weather['ReferenceET'])
-      Date=[datetime.strptime(date,'%Y-%m-%d') for date in new_Row['Date'][0:-8]]
-      list_5=Date+list(forecast_weather['Date'])
+        list_1=new_Row['MinTemp'][:-8]+list(forecast_weather['MinTemp'])
+        list_2=new_Row['MaxTemp'][:-8]+list(forecast_weather['MaxTemp'])
+        list_3=new_Row['Precipitation'][:-8]+list(forecast_weather['Precipitation'])
+        list_4=new_Row['ReferenceET'][:-8]+list(forecast_weather['ReferenceET'])
+        Date=[datetime.strptime(date,'%Y-%m-%d') for date in new_Row['Date'][:-8]]
+        list_5=Date+list(forecast_weather['Date'])
       
-      weatherData={'MinTemp':list_1,'MaxTemp':list_2,'Precipitation':list_3,'ReferenceET':list_4,'Date':list_5}
-      new_Row['MinTemp']=list_1
-      new_Row['MaxTemp']=list_2
-      new_Row['Precipitation']=list_3
-      new_Row['ReferenceET']=list_4
-      new_Row['Date']=[date.strftime('%Y-%m-%d') for date in list_5]
+        weatherData={'MinTemp':list_1,'MaxTemp':list_2,'Precipitation':list_3,'ReferenceET':list_4,'Date':list_5}
+        new_Row['MinTemp']=list_1
+        new_Row['MaxTemp']=list_2
+        new_Row['Precipitation']=list_3
+        new_Row['ReferenceET']=list_4
+        new_Row['Date']=[date.strftime('%Y-%m-%d') for date in list_5]
       
-      return pd.DataFrame(weatherData)
+        return pd.DataFrame(weatherData)
     
      
 

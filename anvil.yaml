@@ -134,9 +134,9 @@ dependencies:
   resolution_hints: {app_id: 4UK6WHQ6UX7AKELK, name: Material 3 Theme, package_name: m3}
   version: {version_tag: v1.2.2}
 metadata: {logo_img: 'asset:ZhiKaiKou.jpg', title: 灌溉决策2.0}
-name: 灌溉决策支持系统2.0
+name: 灌溉决策系统2.0
 native_deps: null
-package_name: ________2_0
+package_name: ______2_0
 runtime_options:
   client_version: '3'
   server_spec: {base: python310-standard}

@@ -63,10 +63,15 @@ class HomePage(HomePageTemplate):
     if user is None:
       Notification('请先登录再尝试！').show()
     else:
-      if anvil.server.call('get_zhiKaiKou_info') is not None:
-        open_form('irrigationPage')
+      if anvil.server.call('get_zhiKaiKou_info') is None :
+        Notification('你还未完成直开口相关信息输入！').show()
+      elif anvil.server.call('get_irrigation_info') is None:
+          Notification('系统今天可能还未完成首次计算！').show()
       else:
-        Notification('你还未输入直开口相关信息，或已输入但还未完成首次计算！').show()
+        open_form('irrigationPage')
+
+        
+        
 
   def navigation_link_4_click(self, **event_args):
     """This method is called when the component is clicked"""
