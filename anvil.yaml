@@ -1,5 +1,20 @@
 allow_embedding: false
 db_schema:
+  croppreciseparameter:
+    client: none
+    columns:
+    - admin_ui: {order: 0, width: 200}
+      name: User
+      target: users
+      type: link_single
+    - admin_ui: {order: 1, width: 200}
+      name: cropName
+      type: string
+    - admin_ui: {order: 2, width: 200}
+      name: parameterName
+      type: simpleObject
+    server: full
+    title: cropPreciseParameter
   irrigation_decisions:
     client: none
     columns:
@@ -30,21 +45,6 @@ db_schema:
       type: link_single
     server: full
     title: Irrigation_decisions
-  preciseparameter:
-    client: none
-    columns:
-    - admin_ui: {order: 0, width: 200}
-      name: User
-      target: users
-      type: link_single
-    - admin_ui: {order: 1, width: 200}
-      name: cropName
-      type: string
-    - admin_ui: {order: 2, width: 200}
-      name: CropParameter
-      type: simpleObject
-    server: full
-    title: PreciseParameter
   users:
     client: none
     columns:
