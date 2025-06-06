@@ -13,7 +13,7 @@ from anvil.tables import app_tables
 from aquacrop import AquaCropModel, IrrigationManagement, InitialWaterContent, GroundWater,Crop,Soil 
 import copy
 
-'''说明：此类服务器模块中为模型运行相关的方法函数
+'''说明：此类服务器模块中为AquaCrop模型运行相关的方法函数
 '''
 
 def GetForecastWeather(location,days):#获取预报气象数据
@@ -216,7 +216,7 @@ def RunModel(current_user):
       return  '新用户或从没有提交过模型数据的就不要执行以下模块/管理员账户也不用执行'
       
     irri_info=app_tables.irrigation_decisions.get(User=current_user)
-    if irri_info is not None and beijing_time.strftime('%Y-%m-%d') in str(irri_info['submit_time']):
+    if irri_info is not None and str(beijing_time.strftime('%Y-%m-%d')) in str(irri_info['submit_time']):
       return  '当日已经运行过也不用执行'
       
     sim_startDate = data['irrigationArea_infor'][-1]
@@ -225,7 +225,6 @@ def RunModel(current_user):
     soilParam =data['soil_infor'][0:7]
     smt =data['soil_infor'][7:11]
     Zhikaikou_code=data['irrigationArea_infor'][0]
-  
     soil=CustomSoil(soilParam)
     groundWater=CustomGroundWater(data['water_table'])
 
@@ -262,11 +261,7 @@ def RunModel(current_user):
       irrigation =list( water_flux['IrrDay'])
       for i in range(0, len(irrigation)):
         irrigation[i]=round(irrigation[i]*area*0.6666667,2)      #亩的单位要换算
-          
-      # water_storage=model._outputs.water_storage
-      # water_storage=water_storage[water_storage['growing_season']==1]
-      # water_storage=water_storage.iloc[0,3:15]#获取种植当日的土壤水分含量
-      # water_storage=list(water_storage)
+     
       water_content =list(  water_flux['Wr'])#'Wr作物根区水分'
       actual_transpiration =list(  water_flux['Tr'])#作物蒸腾量（mm）。
 
