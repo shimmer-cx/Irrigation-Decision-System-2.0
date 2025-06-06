@@ -17,8 +17,8 @@ components_by_slot:
       name: data_grid_1
       properties:
         columns:
-        - {data_key: column_1, id: SRSQTI, title: 直开口用户}
-        - {data_key: column_2, id: PCFWXC, title: 作物}
+        - {data_key: user, expand: false, id: SRSQTI, title: 直开口用户, width: 320.125}
+        - {data_key: cropName, id: PCFWXC, title: 作物}
         - {data_key: column_3, id: JNCTUP, title: 设置更多参数}
       type: DataGrid
     layout_properties: {}
