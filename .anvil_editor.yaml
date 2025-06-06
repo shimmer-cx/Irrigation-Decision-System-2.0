@@ -4,6 +4,7 @@ unique_ids:
     ZhiKaiKou.jpg: '1743478226479520403734451.66144'
     aquacrop.jpg: '17434804838712671809581.7810373'
     theme.css: 6G44GIEQQRJLILWU6GQSQO5BTDFT5ZI3
+    作物参数.png: '1749218359544372001217808.37866'
     决策原理.png: '174348092185393850811856.2842'
     气象.jpg: '174348133217811268752035.730856'
   forms:
@@ -20,6 +21,7 @@ unique_ids:
     irrigationPage.irrigationHistory.RowTemplate4: '1743902520275875484665749.8027'
     moreParameter: '1749047299614330450496709.5614'
     moreParameter.RowTemplate5: '1749212302456314030785995.0243'
+    moreParameter.userCropParameter: '1749218679049441665380083.8354'
     soilEnvironment: '1743496084433918970881728.5365'
     soilEnvironment.RowTemplate2: '1743560431223959234078605.0317'
   modules: {}

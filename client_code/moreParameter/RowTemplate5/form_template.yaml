@@ -1,3 +1,10 @@
-components: []
-container: {type: DataRowPanel}
+components:
+- event_bindings: {click: button_1_click}
+  layout_properties: {column: JNCTUP}
+  name: button_1
+  properties: {align: center, appearance: outlined, text: 去上传}
+  type: form:dep_lin1x4oec0ytd:_Components.Button
+container:
+  properties: {align: center}
+  type: DataRowPanel
 is_package: true
