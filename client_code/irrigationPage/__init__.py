@@ -31,12 +31,12 @@ class irrigationPage(irrigationPageTemplate):
     date_list=data['date_list']
     irrigation.reverse()#反向列表
     date_list.reverse()#反向列表
-    irri_history=irrigation[8:]
-    date_history=date_list[8:]
+    irri_history=irrigation[7:]
+    date_history=date_list[7:]
     irrigationHistory.irri_history=irri_history#
     irrigationHistory.date_history=date_history#
-    irri_future= irrigation[0:8]
-    date_future= date_list[0:8]
+    irri_future= irrigation[0:7]
+    date_future= date_list[0:7]
     irri_future.reverse()#再反回来列表
     date_future.reverse()#再反回来列表
     for irri,date in zip(irri_history,date_history):

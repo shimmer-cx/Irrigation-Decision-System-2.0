@@ -2,7 +2,7 @@ components_by_slot:
   content:
   - layout_properties: {}
     name: heading_1
-    properties: {icon: 'mi:potted_plant', text: 作物基本信息}
+    properties: {align: center, icon: 'mi:potted_plant', text: 作物基本信息}
     type: form:dep_lin1x4oec0ytd:_Components.Heading
   - components:
     - data_bindings:

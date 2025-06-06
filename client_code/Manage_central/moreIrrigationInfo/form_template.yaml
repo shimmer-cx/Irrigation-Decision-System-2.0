@@ -1,0 +1,19 @@
+components_by_slot:
+  content:
+  - layout_properties: {}
+    name: heading_1
+    properties: {align: center}
+    type: form:dep_lin1x4oec0ytd:_Components.Heading
+  - layout_properties: {}
+    name: plot_1
+    properties: {}
+    type: Plot
+  navigation:
+  - layout_properties: {}
+    name: navigation_link_1
+    properties: {text: 返回}
+    type: form:dep_lin1x4oec0ytd:_Components.NavigationLink
+is_package: true
+layout:
+  properties: {navigation_rail_vertical_align: center, show_sidesheet: false}
+  type: form:dep_lin1x4oec0ytd:Layouts.NavigationRailLayout

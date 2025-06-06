@@ -13,12 +13,12 @@ class HomePage(HomePageTemplate):
     # Set Form properties and Data Bindings.
     self.init_components(**properties)
     user = anvil.users.get_user()
-    if user is None:
-      self.button_1.visible=True
-      self.button_2.visible=False
+    if user is not None:
+      self.icon_button_1.icon='mi:frame_person'
+      self.text_4.text=user['email']
     else:
-      self.button_1.visible=False
-      self.button_2.visible=True
+      self.icon_button_1.icon='mi:frame_person_off'
+      self.text_4.text='请登录'
     # Any code you write here will run before the form opens.
 
 
@@ -32,20 +32,7 @@ class HomePage(HomePageTemplate):
     """This method is called when the mouse cursor leaves this component"""
     self.rich_text_2.content=""
 
-  def button_1_click(self, **event_args):
-    user=anvil.users.login_with_form()
-    if user is not None:
-      self.button_1.visible=False
-      self.button_2.visible=True
-      Notification('登录成功！').show()
-      
-    
 
-  def button_2_click(self, **event_args):
-    anvil.users.logout()
-    self.button_1.visible=True
-    self.button_2.visible=False
-    Notification('退出登录成功！').show()
 
 
 
@@ -111,6 +98,21 @@ class HomePage(HomePageTemplate):
   #   self.user = anvil.users.get_user()
 
 
+
+  def icon_button_1_click(self, **event_args):
+    if anvil.users.get_user() is None:
+      user=anvil.users.login_with_form()
+      if user is not None:
+        self.icon_button_1.icon='mi:frame_person'
+        self.text_4.text=user['email']
+        Notification('登录成功！').show()
+    else:
+      anvil.users.logout()
+      self.icon_button_1.icon='mi:frame_person_off'
+      self.text_4.text='请登录'
+      Notification('已退出登录！').show()
+
+ 
 
     
 
