@@ -13,8 +13,28 @@ db_schema:
     - admin_ui: {order: 2, width: 200}
       name: parameterName
       type: simpleObject
+    - admin_ui: {order: 3, width: 200}
+      name: parameterValue
+      type: simpleObject
+    - admin_ui: {order: 4, width: 200}
+      name: parameterDescription
+      type: simpleObject
     server: full
     title: cropPreciseParameter
+  files:
+    client: none
+    columns:
+    - admin_ui: {order: 0, width: 200}
+      name: path
+      type: string
+    - admin_ui: {order: 1, width: 262}
+      name: file
+      type: media
+    - admin_ui: {order: 2, width: 200}
+      name: file_version
+      type: string
+    server: full
+    title: Files
   irrigation_decisions:
     client: none
     columns:
@@ -149,5 +169,8 @@ services:
 - client_config: {allow_remember_me: true, allow_signup: true, confirm_email: false, enable_automatically: true, remember_me_days: 30, use_email: true}
   server_config: {user_table: users}
   source: /runtime/services/anvil/users.yml
+- client_config: {}
+  server_config: {file_table: files}
+  source: /runtime/services/anvil/files.yml
 startup: {module: HomePage, type: form}
 startup_form: null

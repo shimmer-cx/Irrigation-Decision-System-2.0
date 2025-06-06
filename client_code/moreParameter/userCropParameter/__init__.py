@@ -15,5 +15,7 @@ class userCropParameter(userCropParameterTemplate):
 
   def button_1_click(self, **event_args):
     """This method is called when the component is clicked."""
+    #下载参数表格文件:
+    parameterFile=app_tables.files.get(path='allCropParameter.csv')['file']
     
-    parameter=c
+    
