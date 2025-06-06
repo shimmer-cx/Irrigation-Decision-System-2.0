@@ -13,7 +13,8 @@ components_by_slot:
       name: image_1
       properties: {height: 313.375, source: _/theme/作物参数.png}
       type: Image
-    - layout_properties: {grid_position: 'AJUNMV,JIUNJR'}
+    - event_bindings: {click: button_1_click}
+      layout_properties: {grid_position: 'AJUNMV,JIUNJR'}
       name: button_1
       properties: {align: right, appearance: outlined, bold: false, icon: 'mi:file_save', text: 下载参数表格文件}
       type: form:dep_lin1x4oec0ytd:_Components.Button
