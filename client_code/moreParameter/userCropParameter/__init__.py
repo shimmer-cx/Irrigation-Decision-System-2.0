@@ -2,10 +2,11 @@ from ._anvil_designer import userCropParameterTemplate
 from anvil import *
 import anvil.server
 import anvil.users
-import anvil.tables as tables
-import anvil.tables.query as q
+# import anvil.tables as tables
+# import anvil.tables.query as q
 from anvil.tables import app_tables
-from aquacrop import Crop
+import pandas as pd
+
 class userCropParameter(userCropParameterTemplate):
   def __init__(self, **properties):
     # Set Form properties and Data Bindings.
@@ -16,6 +17,12 @@ class userCropParameter(userCropParameterTemplate):
   def button_1_click(self, **event_args):
     """This method is called when the component is clicked."""
     #下载参数表格文件:
-    parameterFile=app_tables.files.get(path='allCropParameter.csv')['file']
+    parameterFile=app_tables.files.get(path='allCropParameter.xlsx')['file']
+    anvil.media.download(parameterFile)
+
+  def file_loader_2_change(self, file, **event_args):
+    """This method is called when a new file is loaded into this FileLoader"""
+    df_excel=pd.read_excel(self.file_loader_2.file)
+    
     
     

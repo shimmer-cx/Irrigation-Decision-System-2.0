@@ -22,7 +22,7 @@ db_schema:
     server: full
     title: cropPreciseParameter
   files:
-    client: none
+    client: search
     columns:
     - admin_ui: {order: 0, width: 200}
       name: path
@@ -172,5 +172,5 @@ services:
 - client_config: {}
   server_config: {file_table: files}
   source: /runtime/services/anvil/files.yml
-startup: {module: HomePage, type: form}
+startup: {module: moreParameter.userCropParameter, type: form}
 startup_form: null
