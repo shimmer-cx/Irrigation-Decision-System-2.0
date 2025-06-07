@@ -1,6 +1,6 @@
 import anvil.files
 from anvil.files import data_files
-
+import BytesIO
 import anvil.users
 # import anvil.tables as tables
 # import anvil.tables.query as 
@@ -93,7 +93,7 @@ def downLoadCropParamsExcel(cropName,userName):
 @anvil.server.callable
 @anvil.tables.in_transaction
 def upload_crop_parameter(my_media,cropName,userName):
-    CropParams_df=pd.read_csv(my_media)
+    CropParams_df=pd.read_pickle(BytesIO(my_media.get_bytes()))
     userRow=(app_tables.usercropparameter.get(User=userName,cropName=cropName)
          or app_tables.usercropparameter.add_row(User=userName,cropName=cropName))
     userRow['parameter_file']=my_media
