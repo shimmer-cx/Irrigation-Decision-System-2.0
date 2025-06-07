@@ -8,6 +8,9 @@ from anvil.tables import app_tables
 
 
 class userCropParameter(userCropParameterTemplate):
+
+  cropName=''
+  
   def __init__(self, **properties):
     # Set Form properties and Data Bindings.
     self.init_components(**properties)
@@ -22,7 +25,11 @@ class userCropParameter(userCropParameterTemplate):
 
   def file_loader_2_change(self, file, **event_args):
     """This method is called when a new file is loaded into this FileLoader"""
-    self.file_loader_2.file
+    # anvil.server.call('save_parameter_excel',self.file_loader_2.file,self.cropName)
+    anvil.server.call('save_crop_parameter',self.file_loader_2.file,self.cropName)
+
+  
+    
     
     
     

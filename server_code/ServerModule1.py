@@ -7,6 +7,7 @@ from anvil.tables import app_tables
 import anvil.server
 from datetime import datetime
 from zoneinfo import ZoneInfo
+import pandas as pd
 '''说明：此类文件中为数据库处理相关函数方法
 '''
 
@@ -48,3 +49,16 @@ def get_zhiKaiKou_info():
   current_user = anvil.users.get_user()
   if current_user is not None:
     return app_tables.zhikaikouuser_data.get(User=current_user)
+
+  
+@anvil.server.callable
+@anvil.tables.in_transaction
+def save_crop_parameter(file,cropName):
+    current_user = anvil.users.get_user()
+    newRow=(app_tables.croppreciseparameter.get(User=current_user,cropName=cropName)
+            or app_tables.croppreciseparameter.add_row(User=current_user,cropName=cropName))
+    newRow['parameter_file']=file
+    df_excel=pd.read_excel(file.get_bytes())
+    newRow['parameter_Name']=list(df_excel['参数名称'])
+    newRow['parameter_value']=list(df_excel['设定值'])
+  

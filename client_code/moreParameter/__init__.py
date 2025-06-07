@@ -1,4 +1,5 @@
 from ._anvil_designer import moreParameterTemplate
+from .userCropParameter import userCropParameter
 from anvil import *
 import anvil.server
 import anvil.users
@@ -18,5 +19,5 @@ class moreParameter(moreParameterTemplate):
     for crop in crop_info['crop_infor']:
       tempRow=[{'user':crop_info['User']['email'],'cropName':crop['cropName']}]
       self.repeating_panel_1.items= self.repeating_panel_1.items + copy.deepcopy( tempRow ) 
-
+     
     # Any code you write here will run before the form opens.

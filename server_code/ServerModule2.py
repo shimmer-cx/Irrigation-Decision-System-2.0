@@ -168,7 +168,7 @@ def CustomSoil(soilParam):
                               penetrability=100)
     return custom
 
-def CustomCrop(crop_param):
+def CustomCrop(crop_param,user):
 
     crop_name=crop_param['cropName']
     CropType=crop_param['Type']
@@ -181,11 +181,17 @@ def CustomCrop(crop_param):
     built_inCropTypes={'玉米':'Maize', '小麦':'Wheat','水稻':'Rice', '土豆':'Potato'}#the built-in crop types
   
     if crop_name not in built_inCropTypes:
-      crop = Crop('custom', planting_date=planting_date,harvest_date=harvest_date,
+      if app_tables.croppreciseparameter.get(User=user) is not None:
+        crop = Crop('custom', planting_date=planting_date,harvest_date=harvest_date,
+                    CropType=CropTypes[CropType],
+                    PlantMethod=PlantMethods[PlantMethod])
+      else:
+        crop = Crop('custom', planting_date=planting_date,harvest_date=harvest_date,
                     CropType=CropTypes[CropType],
                     PlantMethod=PlantMethods[PlantMethod])
     else:     
       crop= Crop(built_inCropTypes[crop_name],planting_date=planting_date,harvest_date=harvest_date)
+    
     return crop
 
 def CustomGroundWater(waterTable):
