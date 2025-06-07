@@ -56,6 +56,11 @@ def get_zhiKaiKou_info():
 
 @anvil.server.callable
 @anvil.tables.in_transaction
+def get_allZhiKaiKou_info():
+    return app_tables.zhikaikouuser_data.search()
+
+@anvil.server.callable
+@anvil.tables.in_transaction
 def downLoadCropParamsExcel(cropName,userName):
     parameterDescription=["Vol (%) below saturation at which stress begins to occur due to deficient aeration",
                         "最大冠层覆盖度（土壤覆盖比例）",    "冠层下降系数（每GDD/日历日的分数）",        "",

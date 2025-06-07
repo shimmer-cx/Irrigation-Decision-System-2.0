@@ -15,9 +15,10 @@ class moreParameter(moreParameterTemplate):
     # Set Form properties and Data Bindings.
     self.init_components(**properties)
     self.repeating_panel_1.items=[]
-    crop_info=anvil.server.call('get_zhiKaiKou_info')
-    for crop in crop_info['crop_infor']:
-      tempRow=[{'user':crop_info['User']['email'],'cropName':crop['cropName']}]
-      self.repeating_panel_1.items= self.repeating_panel_1.items + copy.deepcopy( tempRow ) 
+    rows=anvil.server.call('get_allZhiKaiKou_info')
+    for row in rows:
+      for crop in row['crop_infor']:
+        tempRow=[{'user':row['User']['email'],'cropName':crop['cropName']}]
+        self.repeating_panel_1.items= self.repeating_panel_1.items + copy.deepcopy( tempRow ) 
      
     # Any code you write here will run before the form opens.
