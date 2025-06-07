@@ -172,26 +172,51 @@ def CustomSoil(soilParam):
 def CustomCrop(crop_param,user):
 
     crop_name=crop_param['cropName']
-    CropType=crop_param['Type']
+    # CropType=crop_param['Type']
     planting_date=crop_param['plantDate']
     harvest_date=crop_param['harvesDate']
-    PlantMethod=crop_param['plantMethod']
+    # PlantMethod=crop_param['plantMethod']
 
-    CropTypes={"叶菜类":1,"根/块茎":2,"果实/谷物":3}#作物类型（1 = 叶菜类，2 = 根/块茎，3 = 果实/谷物）
-    PlantMethods={"移栽":0,"播种":1}#播种方法（0 = 移栽，1 = 播种）
-    built_inCropTypes={'玉米':'Maize', '小麦':'Wheat','水稻':'Rice', '土豆':'Potato'}#the built-in crop types
-    built_inCrop={}
-    if crop_name not in built_inCropTypes:
-      if app_tables.croppreciseparameter.get(User=user) is not None:
-        crop = Crop('custom', planting_date=planting_date,harvest_date=harvest_date,
-                    CropType=CropTypes[CropType],
-                    PlantMethod=PlantMethods[PlantMethod])
-      else:
-        crop = Crop('custom', planting_date=planting_date,harvest_date=harvest_date,
-                    CropType=CropTypes[CropType],
-                    PlantMethod=PlantMethods[PlantMethod])
-    else:     
-      crop= Crop(built_inCropTypes[crop_name],planting_date=planting_date,harvest_date=harvest_date)
+    # CropTypes={"叶菜类":1,"根/块茎":2,"果实/谷物":3}#作物类型（1 = 叶菜类，2 = 根/块茎，3 = 果实/谷物）
+    # PlantMethods={"移栽":0,"播种":1}#播种方法（0 = 移栽，1 = 播种）
+
+    built_inCrop={ "土豆":"Potato",
+                "土豆GDD":"PotatoGDD",
+                "本地土豆GDD":"PotatoLocalGDD",
+                "大豆":"Soybean",
+                "大豆GDD":"SoybeanGDD",
+                "大麦":"Barley",
+                "大麦GDD":"BarleyGDD",
+                "冬小麦GDD":"WheatGDD_1dec",
+                "番茄":"Tomato",
+                "番茄GDD":"TomatoGDD",
+                "甘蔗":"SugarCane",
+                "高粱":"Sorghum",
+                "高粱GDD":"SorghumGDD",
+                "冠军玉米GDD":"MaizeChampionGDD",
+                "棉花":"Cotton",
+                "棉花GDD":"CottonGDD",
+                "水培麦GDD":"HydWheatGDD",
+                "水润稻":"PaddyRice",
+                "水润稻GDD":"PaddyRiceGDD",
+                "甜菜":"SugarBeet",
+                "甜菜GDD":"SugarBeetGDD",
+                "乡稻":"localpaddy",
+                "向日葵":"Sunflower",
+                "向日葵GDD":"SunflowerGDD",
+                "小麦":"Wheat",
+                "小麦GDD":"WheatGDD",
+                "玉米":"Maize",
+                "玉米GDD":"MaizeGDD",
+                "长丰麦GDD":"WheatLongGDD",
+                "干安豆/旱地豆":"DryBean",
+                "干安豆GDD":"DryBeanGDD",
+                "默认":"Default",
+                "木薯":"Cassava",
+                "苜蓿GDD":"AlfalfaGDD",
+                "藜麦":"Quinoa"}
+
+    crop= Crop(built_inCrop[crop_name],planting_date=planting_date,harvest_date=harvest_date)
     
     return crop
 
