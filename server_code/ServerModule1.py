@@ -1,6 +1,6 @@
 import anvil.files
 from anvil.files import data_files
-import BytesIO
+
 import anvil.users
 # import anvil.tables as tables
 # import anvil.tables.query as 
@@ -10,7 +10,8 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 import pandas as pd
 from . import crop_params_code
-import anvil.media
+from io import BytesIO
+
 '''说明：此类文件中为数据库处理相关函数方法
 '''
 
@@ -85,7 +86,7 @@ def downLoadCropParamsExcel(cropName,userName):
                      '设定值':list(crop_params_code.crop_params[cropName].values()),
                       '参数描述':parameterDescription}
     CropParams_df=pd.DataFrame(CropParameters)
-    file_contents = CropParams_df.to_csv(index=False).encode()      # String as bytes
+    file_contents = CropParams_df.to_csv(sep=',',index=False).encode()      # String as bytes
     my_media = anvil.BlobMedia(content_type="csv", content=file_contents, name=userName[:-4]+'_CropParameters.csv')
     return my_media
 
@@ -93,9 +94,13 @@ def downLoadCropParamsExcel(cropName,userName):
 @anvil.server.callable
 @anvil.tables.in_transaction
 def upload_crop_parameter(my_media,cropName,userName):
-    CropParams_df=pd.read_pickle(BytesIO(my_media.get_bytes()))
+    CropParams_df=pd.read_csv(BytesIO(my_media.get_bytes()))
     userRow=(app_tables.usercropparameter.get(User=userName,cropName=cropName)
          or app_tables.usercropparameter.add_row(User=userName,cropName=cropName))
     userRow['parameter_file']=my_media
-    userRow['parameter_value']=dict.fromkeys(list(crop_params_code.crop_params[cropName].keys()), list(CropParams_df['设定值']))
+    parameter_dict={}
+    for Param,value in zip(CropParams_df['参数名'],CropParams_df['设定值']):
+      parameter_dict[Param]=value
+      
+    userRow['parameter_value']=parameter_dict
   
