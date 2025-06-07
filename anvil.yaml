@@ -3,13 +3,13 @@ db_schema:
   files:
     client: none
     columns:
-    - admin_ui: {order: 0, width: 200}
+    - admin_ui: {width: 200}
       name: path
       type: string
-    - admin_ui: {order: 1, width: 200}
+    - admin_ui: {width: 200}
       name: file
       type: media
-    - admin_ui: {order: 2, width: 200}
+    - admin_ui: {width: 200}
       name: file_version
       type: string
     server: full
@@ -47,19 +47,18 @@ db_schema:
   usercropparameter:
     client: none
     columns:
-    - admin_ui: {order: 0, width: 200}
+    - admin_ui: {width: 200}
       name: User
-      target: users
-      type: link_single
-    - admin_ui: {order: 1, width: 200}
+      type: string
+    - admin_ui: {width: 200}
       name: cropName
       type: string
-    - admin_ui: {order: 4, width: 200}
-      name: parameter_value
-      type: simpleObject
-    - admin_ui: {order: 2, width: 200}
+    - admin_ui: {width: 200}
       name: parameter_file
       type: media
+    - admin_ui: {width: 200}
+      name: parameter_value
+      type: simpleObject
     server: full
     title: userCropParameter
   users:
@@ -97,26 +96,26 @@ db_schema:
   weatherdata:
     client: none
     columns:
-    - admin_ui: {order: 1.25, width: 200}
+    - admin_ui: {width: 200}
       name: User
       target: users
       type: link_single
-    - admin_ui: {order: 1.375, width: 200}
+    - admin_ui: {width: 200}
       name: crop
       type: string
-    - admin_ui: {order: 3.375, width: 200}
+    - admin_ui: {width: 200}
       name: MinTemp
       type: simpleObject
-    - admin_ui: {order: 4.375, width: 200}
+    - admin_ui: {width: 200}
       name: MaxTemp
       type: simpleObject
-    - admin_ui: {order: 5.375, width: 200}
+    - admin_ui: {width: 200}
       name: Precipitation
       type: simpleObject
-    - admin_ui: {order: 6.375, width: 200}
+    - admin_ui: {width: 200}
       name: ReferenceET
       type: simpleObject
-    - admin_ui: {order: 7.375, width: 200}
+    - admin_ui: {width: 200}
       name: Date
       type: simpleObject
     server: full

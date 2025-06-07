@@ -17,4 +17,5 @@ class RowTemplate5(RowTemplate5Template):
   def button_1_click(self, **event_args):
     """This method is called when the component is clicked."""
     userCropParameter.cropName=self.item['cropName']
+    userCropParameter.userName=self.item['user']
     open_form('moreParameter.userCropParameter')
