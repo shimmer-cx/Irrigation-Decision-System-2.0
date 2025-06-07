@@ -180,7 +180,7 @@ def CustomCrop(crop_param,user):
     CropTypes={"叶菜类":1,"根/块茎":2,"果实/谷物":3}#作物类型（1 = 叶菜类，2 = 根/块茎，3 = 果实/谷物）
     PlantMethods={"移栽":0,"播种":1}#播种方法（0 = 移栽，1 = 播种）
     built_inCropTypes={'玉米':'Maize', '小麦':'Wheat','水稻':'Rice', '土豆':'Potato'}#the built-in crop types
-  
+    built_inCrop={}
     if crop_name not in built_inCropTypes:
       if app_tables.croppreciseparameter.get(User=user) is not None:
         crop = Crop('custom', planting_date=planting_date,harvest_date=harvest_date,
