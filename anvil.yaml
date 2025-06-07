@@ -1,55 +1,19 @@
 allow_embedding: false
 db_schema:
-  croppreciseparameter:
+  files:
     client: none
     columns:
     - admin_ui: {order: 0, width: 200}
-      name: User
-      target: users
-      type: link_single
-    - admin_ui: {order: 1, width: 200}
-      name: cropName
+      name: path
       type: string
-    - admin_ui: {order: 3, width: 200}
-      name: parameter_Name
-      type: simpleObject
-    - admin_ui: {order: 4, width: 200}
-      name: parameter_value
-      type: simpleObject
-    - admin_ui: {order: 2, width: 200}
-      name: parameter_file
+    - admin_ui: {order: 1, width: 200}
+      name: file
       type: media
+    - admin_ui: {order: 2, width: 200}
+      name: file_version
+      type: string
     server: full
-    title: cropPreciseParameter
-  defaultcropparameter:
-    client: search
-    columns:
-    - admin_ui: {order: 3, width: 200}
-      name: Barley
-      type: simpleObject
-    - admin_ui: {order: 4, width: 200}
-      name: Cotton
-      type: simpleObject
-    - admin_ui: {order: 5, width: 200}
-      name: Default
-      type: simpleObject
-    - admin_ui: {order: 6, width: 200}
-      name: DryBean
-      type: simpleObject
-    - admin_ui: {order: 1.5, width: 200}
-      name: isGDDType
-      type: bool
-    - admin_ui: {order: 7, width: 200}
-      name: Maize
-      type: simpleObject
-    - admin_ui: {order: 8, width: 200}
-      name: PaddyRice
-      type: simpleObject
-    - admin_ui: {order: 9, width: 200}
-      name: Potato
-      type: simpleObject
-    server: full
-    title: defaultCropParameter
+    title: Files
   irrigation_decisions:
     client: none
     columns:
@@ -80,6 +44,24 @@ db_schema:
       type: link_single
     server: full
     title: Irrigation_decisions
+  usercropparameter:
+    client: none
+    columns:
+    - admin_ui: {order: 0, width: 200}
+      name: User
+      target: users
+      type: link_single
+    - admin_ui: {order: 1, width: 200}
+      name: cropName
+      type: string
+    - admin_ui: {order: 4, width: 200}
+      name: parameter_value
+      type: simpleObject
+    - admin_ui: {order: 2, width: 200}
+      name: parameter_file
+      type: media
+    server: full
+    title: userCropParameter
   users:
     client: none
     columns:
@@ -189,3 +171,4 @@ services:
   source: /runtime/services/anvil/files.yml
 startup: {module: HomePage, type: form}
 startup_form: null
+uplink_visible: true

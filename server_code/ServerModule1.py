@@ -1,13 +1,15 @@
 import anvil.files
 from anvil.files import data_files
+
 import anvil.users
-import anvil.tables as tables
-import anvil.tables.query as q
+# import anvil.tables as tables
+# import anvil.tables.query as 
 from anvil.tables import app_tables
 import anvil.server
 from datetime import datetime
 from zoneinfo import ZoneInfo
 import pandas as pd
+from . import crop_params_code
 '''说明：此类文件中为数据库处理相关函数方法
 '''
 
@@ -55,10 +57,9 @@ def get_zhiKaiKou_info():
 @anvil.tables.in_transaction
 def save_crop_parameter(file,cropName):
     current_user = anvil.users.get_user()
-    newRow=(app_tables.croppreciseparameter.get(User=current_user,cropName=cropName)
-            or app_tables.croppreciseparameter.add_row(User=current_user,cropName=cropName))
+    newRow=(app_tables.usercropparameter.get(User=current_user,cropName=cropName)
+            or app_tables.usercropparameter.add_row(User=current_user,cropName=cropName))
     newRow['parameter_file']=file
     df_excel=pd.read_excel(file.get_bytes())
-    newRow['parameter_Name']=list(df_excel['参数名称'])
-    newRow['parameter_value']=list(df_excel['设定值'])
+    newRow['parameter_value']
   

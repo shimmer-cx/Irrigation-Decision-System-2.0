@@ -20,8 +20,8 @@ class userCropParameter(userCropParameterTemplate):
   def button_1_click(self, **event_args):
     """This method is called when the component is clicked."""
     #下载参数表格文件:
-    parameterFile=app_tables.files.get(path='allCropParameter.xlsx')['file']
-    anvil.media.download(parameterFile)
+    # parameterFile=app_tables.files.get(path='allCropParameter.xlsx')['file']
+    # anvil.media.download(parameterFile)
 
   def file_loader_2_change(self, file, **event_args):
     """This method is called when a new file is loaded into this FileLoader"""
