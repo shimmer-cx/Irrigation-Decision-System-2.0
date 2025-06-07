@@ -37,13 +37,16 @@ db_schema:
       name: DryBean
       type: simpleObject
     - admin_ui: {order: 1.5, width: 200}
-      name: SwitchGDD
+      name: isGDDType
       type: bool
     - admin_ui: {order: 7, width: 200}
       name: Maize
       type: simpleObject
     - admin_ui: {order: 8, width: 200}
       name: PaddyRice
+      type: simpleObject
+    - admin_ui: {order: 9, width: 200}
+      name: Potato
       type: simpleObject
     server: full
     title: defaultCropParameter
