@@ -5,7 +5,7 @@ import anvil.users
 # import anvil.tables as tables
 # import anvil.tables.query as q
 from anvil.tables import app_tables
-import pandas as pd
+
 
 class userCropParameter(userCropParameterTemplate):
   def __init__(self, **properties):
@@ -22,7 +22,7 @@ class userCropParameter(userCropParameterTemplate):
 
   def file_loader_2_change(self, file, **event_args):
     """This method is called when a new file is loaded into this FileLoader"""
-    df_excel=pd.read_excel(self.file_loader_2.file)
+    self.file_loader_2.file
     
     
     

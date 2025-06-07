@@ -11,13 +11,10 @@ db_schema:
       name: cropName
       type: string
     - admin_ui: {order: 2, width: 200}
-      name: parameterName
+      name: parameter_file
       type: simpleObject
     - admin_ui: {order: 3, width: 200}
-      name: parameterValue
-      type: simpleObject
-    - admin_ui: {order: 4, width: 200}
-      name: parameterDescription
+      name: parameter_Name
       type: simpleObject
     server: full
     title: cropPreciseParameter
