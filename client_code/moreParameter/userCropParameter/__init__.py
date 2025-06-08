@@ -63,8 +63,12 @@ class userCropParameter(userCropParameterTemplate):
 
   def file_loader_2_change(self, file, **event_args):
     """This method is called when a new file is loaded into this FileLoader"""
-    
-    anvil.server.call('upload_crop_parameter',self.file_loader_2.file,self.built_inCrop[self.cropName],self.userName)
+    if self.file_loader_2.file is not None:
+      anvil.server.call('upload_crop_parameter',self.file_loader_2.file,self.built_inCrop[self.cropName],self.userName)
+      Notification('文件上传成功').show()
+
+   
+      
 
   
     
