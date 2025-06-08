@@ -248,7 +248,7 @@ def RunModel(current_user):
     if data is None or current_user is None:# or current_user['is_manager'] is True:
       return  '新用户或从没有提交过模型数据的就不要执行以下模块/管理员账户也不用执行'
     irri_info=app_tables.irrigation_decisions.search(User=current_user)
-    if irri_info is not None and irri_info[0] is not None:
+    if irri_info is not None:
       for info in irri_info:
         if  beijing_time.strftime('%Y-%m-%d') in info['submit_time']:
           return  '当日已经运行过也不用执行'
