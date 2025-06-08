@@ -1,5 +1,3 @@
-import anvil.files
-from anvil.files import data_files
 
 
 crop_params={'Barley': {'Aer': 15.0,

@@ -1,5 +1,3 @@
-import anvil.files
-from anvil.files import data_files
 
 import anvil.users
 import anvil.server
@@ -172,14 +170,9 @@ def CustomSoil(soilParam):
 def CustomCrop(crop_param,user):
 
     crop_name=crop_param['cropName']
-    # CropType=crop_param['Type']
     planting_date=crop_param['plantDate']
     harvest_date=crop_param['harvesDate']
     # PlantMethod=crop_param['plantMethod']
-
-    # CropTypes={"叶菜类":1,"根/块茎":2,"果实/谷物":3}#作物类型（1 = 叶菜类，2 = 根/块茎，3 = 果实/谷物）
-    # PlantMethods={"移栽":0,"播种":1}#播种方法（0 = 移栽，1 = 播种）
-
     built_inCrop={ "土豆":"Potato",
                 "土豆GDD":"PotatoGDD",
                 "本地土豆GDD":"PotatoLocalGDD",
@@ -215,9 +208,13 @@ def CustomCrop(crop_param,user):
                 "木薯":"Cassava",
                 "苜蓿GDD":"AlfalfaGDD",
                 "藜麦":"Quinoa"}
-
+  
     crop= Crop(built_inCrop[crop_name],planting_date=planting_date,harvest_date=harvest_date)
-    
+    crop_param_row=app_tables.usercropparameter.get(User=user['email'])
+    if crop_param_row is not None:
+      crop.__dict__.update(
+        (k, v) for k, v in crop_param_row['parameter_value'].items()#如果管理中心为用户设定了作物参数，将更新到模型中
+      )
     return crop
 
 def CustomGroundWater(waterTable):
@@ -244,14 +241,17 @@ def RunModel(current_user):
     # 定义北京时区
     beijing_tz = ZoneInfo('Asia/Shanghai')
     # 获取北京时间
-    beijing_time = datetime.now(beijing_tz).replace(tzinfo=None)     
+    beijing_time = datetime.now(beijing_tz).replace(tzinfo=None)    
+    if beijing_time.hour<datetime.strptime("08:00:00","%H:%M:%S").hour :
+      return  "早上八点之后再运行"
     data = app_tables.zhikaikouuser_data.get(User=current_user)  
     if data is None or current_user is None:# or current_user['is_manager'] is True:
       return  '新用户或从没有提交过模型数据的就不要执行以下模块/管理员账户也不用执行'
-      
-    irri_info=app_tables.irrigation_decisions.get(User=current_user)
-    if irri_info is not None and str(beijing_time.strftime('%Y-%m-%d')) in str(irri_info['submit_time']):
-      return  '当日已经运行过也不用执行'
+    irri_info=app_tables.irrigation_decisions.search(User=current_user)
+    if irri_info is not None and irri_info[0] is not None:
+      for info in irri_info:
+        if  beijing_time.strftime('%Y-%m-%d') in info['submit_time']:
+          return  '当日已经运行过也不用执行'
       
     sim_startDate = data['irrigationArea_infor'][-1]
     location = data['irrigationArea_infor'][1:3]
@@ -274,7 +274,7 @@ def RunModel(current_user):
       new_Row=(app_tables.irrigation_decisions.get(crop_name=crop_param['cropName'],User=current_user)
                or app_tables.irrigation_decisions.add_row(crop_name=crop_param['cropName'],User=current_user))
       
-      crop=CustomCrop(crop_param)
+      crop=CustomCrop(crop_param,current_user)
       area =data['irrigationArea_infor'][3]*(crop_param["areaRatio"]/100)
         
       weather_df=Get_weather_data(sim_startDate,location,current_user,crop_param['cropName'])#维度和经度

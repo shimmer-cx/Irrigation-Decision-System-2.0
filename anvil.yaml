@@ -1,19 +1,5 @@
 allow_embedding: false
 db_schema:
-  files:
-    client: none
-    columns:
-    - admin_ui: {width: 200}
-      name: path
-      type: string
-    - admin_ui: {width: 200}
-      name: file
-      type: media
-    - admin_ui: {width: 200}
-      name: file_version
-      type: string
-    server: full
-    title: Files
   irrigation_decisions:
     client: none
     columns:
@@ -165,9 +151,6 @@ services:
 - client_config: {allow_remember_me: true, allow_signup: true, confirm_email: false, enable_automatically: true, remember_me_days: 30, use_email: true}
   server_config: {user_table: users}
   source: /runtime/services/anvil/users.yml
-- client_config: {}
-  server_config: {file_table: files}
-  source: /runtime/services/anvil/files.yml
 startup: {module: HomePage, type: form}
 startup_form: null
 uplink_visible: true
