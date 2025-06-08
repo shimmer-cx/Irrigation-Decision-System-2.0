@@ -67,7 +67,7 @@ components_by_slot:
     - components:
       - layout_properties: {slot: card-content-slot}
         name: button_3
-        properties: {appearance: text, font_size: 15, icon: 'mi:water_lux', icon_color: '#6b0000', icon_size: 70, text: 作物蒸腾, text_color: ''}
+        properties: {appearance: text, font_size: 15, icon: 'mi:water_lux', icon_color: '#6b0000', icon_size: 70, text: 实际蒸散, text_color: ''}
         type: form:dep_lin1x4oec0ytd:_Components.Button
       - components:
         - layout_properties: {slot: card-content-container-slot}
