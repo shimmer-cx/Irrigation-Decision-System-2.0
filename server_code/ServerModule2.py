@@ -74,26 +74,31 @@ def Get_weather_data(simStartDate, location, current_user, crop):
     new_Row=(app_tables.weatherdata.get(User=current_user,crop=crop)
              or app_tables.weatherdata.add_row(User=current_user,crop=crop,Date=[-1]))
     Start_Date=datetime.strptime(simStartDate, "%Y/%m/%d")
-    # sim_Start_Date=Start_Date.strftime('%Y-%m-%d')
-    # day=3#历史气象数据最晚到3天前的数据
+   
     # 定义北京时区
     beijing_tz = ZoneInfo('Asia/Shanghai')
     # 获取北京时间
     beijing_time = datetime.now(beijing_tz).replace(tzinfo=None,hour=0, minute=0, second=0, microsecond=0)
-    # d=int((beijing_time-Start_Date)/ timedelta(days=1))
-    #获取预测气象数据(#如果在模拟当天获取数据，days=0,否则days=1)
+ 
+    #获取预测气象数据(#如果在模拟当天获取数据，days=0)
     if beijing_time-Start_Date==timedelta(days=0):#模拟当天
-      
+  
       forecast_weather=GetForecastWeather(location,0)
-      return forecast_weather.iloc[:-6]#取预报8天
+      forecast_weather=forecast_weather.iloc[:-6]#取预报8天
+      new_Row['MinTemp']=list(forecast_weather['MinTemp'])
+      new_Row['MaxTemp']=list(forecast_weather['MaxTemp'])
+      new_Row['Precipitation']=list(forecast_weather['Precipitation'])
+      new_Row['ReferenceET']=list(forecast_weather['ReferenceET'])
+      new_Row['Date']= [date.strftime('%Y-%m-%d') for date in list(forecast_weather['Date'])]
+      return forecast_weather#取预报8天
     elif beijing_time-Start_Date==timedelta(days=1):#第二天
-      if new_Row['Date'][0] !=-1 and datetime.strptime(new_Row['Date'][-1],'%Y-%m-%d')-beijing_time==timedelta(days=7):#数据库中已经有气象预报数据了
+      if new_Row['Date'][0] !=-1 and datetime.strptime(new_Row['Date'][-8],'%Y-%m-%d')==beijing_time:#数据库中已经有气象预报数据了
         weatherData={'MinTemp':new_Row['MinTemp'],'MaxTemp':new_Row['MaxTemp'],'Precipitation':new_Row['Precipitation'],
                      'ReferenceET':new_Row['ReferenceET'],'Date':[datetime.strptime(date,'%Y-%m-%d') for date in new_Row['Date']]}
         return pd.DataFrame(weatherData)
       else:
         forecast_weather=GetForecastWeather(location,1)
-        forecast_weather=forecast_weather.iloc[:-6]#取预报8天
+        forecast_weather=forecast_weather.iloc[:-6]#取历史1天和预报8天
      
         new_Row['MinTemp']=list(forecast_weather['MinTemp'])
         new_Row['MaxTemp']=list(forecast_weather['MaxTemp'])
@@ -103,13 +108,14 @@ def Get_weather_data(simStartDate, location, current_user, crop):
         return forecast_weather
     elif beijing_time-Start_Date>timedelta(days=1):#以后
 
-      if new_Row['Date'][0] !=-1 and datetime.strptime(new_Row['Date'][-1],'%Y-%m-%d')-beijing_time==timedelta(days=7):#数据库中已经有气象预报数据了
+      if new_Row['Date'][0] !=-1 and datetime.strptime(new_Row['Date'][-8],'%Y-%m-%d')==beijing_time:#数据库中已经有气象预报数据了
         weatherData={'MinTemp':new_Row['MinTemp'],'MaxTemp':new_Row['MaxTemp'],'Precipitation':new_Row['Precipitation'],
                      'ReferenceET':new_Row['ReferenceET'],'Date':[datetime.strptime(date,'%Y-%m-%d') for date in new_Row['Date']]}
         return pd.DataFrame(weatherData)
       else:
-        forecast_weather=GetForecastWeather(location,1)
-        forecast_weather=forecast_weather.iloc[:-6]#取预报8天
+        days=(beijing_time-datetime.strptime(new_Row['Date'][-8],'%Y-%m-%d'))/timedelta(days=1)
+        forecast_weather=GetForecastWeather(location,int(days))
+        forecast_weather=forecast_weather.iloc[:-6]#取历史days和预报8天
      
         list_1=new_Row['MinTemp'][:-8]+list(forecast_weather['MinTemp'])
         list_2=new_Row['MaxTemp'][:-8]+list(forecast_weather['MaxTemp'])
