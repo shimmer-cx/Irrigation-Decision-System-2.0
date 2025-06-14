@@ -49,12 +49,9 @@ class irrigationPage(irrigationPageTemplate):
         self.text_2.text='灌溉量：'+str(irri)+'m3'
         self.text_3.text=date    
         break
-    Tr=data['actual_transpiration']
-    self.text_5.text=str(Tr[-7])+'mm(今日)'
-    self.text_4.text=str(Tr[-6])+'mm(明日)'
     Wr=data['water_content']
-    self.text_6.text=str(Wr[-7])+'mm(今日)'
-    self.text_6_copy.text=str(Wr[-6])+'mm(明日)'
+    self.text_5.text=str(Wr[-7])+'mm(今日)'
+    self.text_4.text=str(Wr[-6])+'mm(明日)'
 
   def form_show(self, **event_args):
     """This method is called when the form is shown on the page"""

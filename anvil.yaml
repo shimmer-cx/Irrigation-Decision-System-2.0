@@ -19,9 +19,6 @@ db_schema:
       name: water_content
       type: simpleObject
     - admin_ui: {width: 200}
-      name: actual_transpiration
-      type: simpleObject
-    - admin_ui: {width: 200}
       name: date_list
       type: simpleObject
     - admin_ui: {width: 200}

@@ -67,7 +67,7 @@ components_by_slot:
     - components:
       - layout_properties: {slot: card-content-slot}
         name: button_3
-        properties: {appearance: text, font_size: 15, icon: 'mi:water_lux', icon_color: '#6b0000', icon_size: 70, text: 实际蒸散, text_color: ''}
+        properties: {appearance: text, font_size: 15, icon: 'mi:water_lux', icon_color: '#6b0000', icon_size: 70, text: 根区含水量, text_color: ''}
         type: form:dep_lin1x4oec0ytd:_Components.Button
       - components:
         - layout_properties: {slot: card-content-container-slot}
@@ -84,28 +84,6 @@ components_by_slot:
         type: form:dep_lin1x4oec0ytd:_Components.Card.CardContentContainer
       layout_properties: {grid_position: 'DDFTLU,XLGBNB'}
       name: interactive_card_3
-      properties: {enabled: true}
-      type: form:dep_lin1x4oec0ytd:_Components.InteractiveCard
-    - components:
-      - layout_properties: {slot: card-content-slot}
-        name: button_2
-        properties: {appearance: text, font_size: 15, icon: 'mi:align_space_around', icon_color: '#878787', icon_size: 70, text: 根区含水量}
-        type: form:dep_lin1x4oec0ytd:_Components.Button
-      - components:
-        - layout_properties: {slot: card-content-container-slot}
-          name: text_6
-          properties: {font_size: 15, icon: 'mi:waves', icon_size: 20}
-          type: form:dep_lin1x4oec0ytd:_Components.Text
-        - layout_properties: {slot: card-content-container-slot}
-          name: text_6_copy
-          properties: {font_size: 15, icon: 'mi:waves', icon_size: 20}
-          type: form:dep_lin1x4oec0ytd:_Components.Text
-        layout_properties: {slot: card-content-slot}
-        name: card_content_container_4
-        properties: {}
-        type: form:dep_lin1x4oec0ytd:_Components.Card.CardContentContainer
-      layout_properties: {grid_position: 'DDFTLU,XSCJIZ'}
-      name: interactive_card_4
       properties: {enabled: true}
       type: form:dep_lin1x4oec0ytd:_Components.InteractiveCard
     data_bindings: []

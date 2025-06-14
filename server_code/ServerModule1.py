@@ -104,7 +104,7 @@ def upload_crop_parameter(my_media,cropName,userName):
     userRow['parameter_file']=my_media
     parameter_dict={}
     for Param,value in zip(CropParams_df['参数名'],CropParams_df['设定值']):
-     
+
       parameter_dict[Param]=value
     userRow['parameter_value']=parameter_dict
   
