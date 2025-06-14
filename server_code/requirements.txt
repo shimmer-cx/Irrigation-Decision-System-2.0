@@ -4,3 +4,4 @@ requests-cache==1.3.0a0
 retry-requests==2.0.0
 openpyxl==3.1.5
 BytesIO==0.0.2
+aquacropeto==0.1.1
