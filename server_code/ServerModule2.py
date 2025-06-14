@@ -1,14 +1,11 @@
-#anvil基础资源包
 import anvil.users
 import anvil.server
 import anvil.tables as tables
 
-#开源 openmeteo气象数据请求包
 import openmeteo_requests
 import requests_cache
 from retry_requests import retry
 
-#数据处理包
 import pandas as pd
 from datetime import datetime,timedelta
 from zoneinfo import ZoneInfo
