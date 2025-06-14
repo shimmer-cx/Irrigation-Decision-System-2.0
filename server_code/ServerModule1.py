@@ -89,6 +89,7 @@ def downLoadCropParamsExcel(cropName,userName):
                      '设定值':list(crop_params_code.crop_params[cropName].values()),
                       '参数描述':parameterDescription}
     CropParams_df=pd.DataFrame(CropParameters)
+    CropParams_df=CropParams_df[CropParams_df['参数名'] !='Name']
     file_contents = CropParams_df.to_csv(sep=',',index=False).encode()      # String as bytes
     my_media = anvil.BlobMedia(content_type="csv", content=file_contents, name=userName[:-4]+'_CropParameters.csv')
     return my_media
@@ -103,7 +104,7 @@ def upload_crop_parameter(my_media,cropName,userName):
     userRow['parameter_file']=my_media
     parameter_dict={}
     for Param,value in zip(CropParams_df['参数名'],CropParams_df['设定值']):
+     
       parameter_dict[Param]=value
-      
     userRow['parameter_value']=parameter_dict
   
