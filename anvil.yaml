@@ -3,22 +3,22 @@ db_schema:
   irrigation_decisions:
     client: none
     columns:
-    - admin_ui: {width: 200}
+    - admin_ui: {order: 0.375, width: 121}
       name: Zhikaikou_code
       type: string
-    - admin_ui: {width: 200}
+    - admin_ui: {order: 0.75, width: 129}
       name: submit_time
       type: string
-    - admin_ui: {width: 200}
+    - admin_ui: {order: 1.5, width: 116}
       name: crop_name
       type: string
-    - admin_ui: {width: 200}
+    - admin_ui: {order: 4, width: 134}
       name: irrigation
       type: simpleObject
-    - admin_ui: {width: 200}
+    - admin_ui: {order: 5, width: 143}
       name: water_content
       type: simpleObject
-    - admin_ui: {width: 200}
+    - admin_ui: {order: 9, width: 121}
       name: date_list
       type: simpleObject
     - admin_ui: {width: 200}
@@ -106,23 +106,23 @@ db_schema:
   zhikaikouuser_data:
     client: none
     columns:
-    - admin_ui: {width: 200}
+    - admin_ui: {order: 0, width: 120}
       name: User
       target: users
       type: link_single
-    - admin_ui: {width: 200}
+    - admin_ui: {order: 0.5, width: 130}
       name: submit_time
       type: string
-    - admin_ui: {width: 200}
+    - admin_ui: {order: 1, width: 149}
       name: irrigationArea_infor
       type: simpleObject
-    - admin_ui: {width: 200}
+    - admin_ui: {order: 2, width: 186}
       name: crop_infor
       type: simpleObject
-    - admin_ui: {width: 200}
+    - admin_ui: {order: 3, width: 133}
       name: soil_infor
       type: simpleObject
-    - admin_ui: {width: 200}
+    - admin_ui: {order: 4, width: 151}
       name: water_table
       type: simpleObject
     server: full

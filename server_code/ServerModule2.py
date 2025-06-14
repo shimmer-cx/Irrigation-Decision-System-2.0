@@ -2,12 +2,14 @@
 import anvil.users
 import anvil.server
 import anvil.tables as tables
-import pandas as pd
 
+#开源 openmeteo气象数据请求包
 import openmeteo_requests
 import requests_cache
 from retry_requests import retry
 
+#数据处理包
+import pandas as pd
 from datetime import datetime,timedelta
 from zoneinfo import ZoneInfo
 from anvil.tables import app_tables
@@ -258,7 +260,7 @@ def RunModel(current_user):
       area =data['irrigationArea_infor'][3]*(crop_param["areaRatio"]/100)
         
       weather_df=Get_weather_data(sim_startDate,location,current_user,crop_param['cropName'])#维度和经度
-      initialWater=InitialWaterContent(value = ['SAT'])
+      initialWater=InitialWaterContent(value = ['SAT'])#定义开始模拟时土壤水分为饱和状态
       model = AquaCropModel(sim_start_time=sim_startDate,
                           sim_end_time=sim_endDate,
                           weather_df=weather_df,
@@ -267,7 +269,7 @@ def RunModel(current_user):
                           initial_water_content=initialWater,
                           irrigation_management=irr_mngt,
                           groundwater=groundWater) # create model
-      model.run_model(till_termination=True)#Run
+      model.run_model(till_termination=True)#运行模型
       
       water_flux=model._outputs.water_flux
       #water_flux=water_flux[ water_flux['season_counter'] ==0]#使用布尔表达式：根据条件过滤 DataFrame
