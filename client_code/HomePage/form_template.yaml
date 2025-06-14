@@ -56,7 +56,7 @@ components_by_slot:
     - components:
       - layout_properties: {slot: card-content-container-slot}
         name: heading_2
-        properties: {align: justify, bold: false, italic: true, text: 如何高效的利用有限水资源灌溉农田？基于AquaCrop的灌溉决策支持系统，给出我们的解决方案！}
+        properties: {align: justify, bold: false, italic: true, text: 如何高效的利用有限水资源灌溉农田？基于AquaCrop的灌溉决策支持系统将会给出解决办法！}
         type: form:dep_lin1x4oec0ytd:_Components.Heading
       - components:
         - event_bindings: {mouse_leave: image_2_mouse_leave, mouse_up: image_2_mouse_up}
