@@ -278,7 +278,6 @@ def RunModel(current_user):
      
       water_content =list(  water_flux['Wr'])#'Wr作物根区水分'
       # actual_transpiration =list(  water_flux['Tr'])#作物蒸腾量（mm）。
-
       # new_Row['actual_transpiration']=[round(x, 2) for x in actual_transpiration]
       new_Row['irrigation']=irrigation
       new_Row['water_content']=[round(x, 2) for x in water_content]
